@@ -1,148 +1,116 @@
-# B-roll Studio
+# Broll Studio
 
-Generate **editorial kinetic typography B-roll** videos (≤8 detik) untuk YouTube.
+Generate **editorial kinetic typography B-roll** videos (≤6 detik) untuk YouTube, Reels, TikTok.
 
 Style: premium editorial typography, asymmetric composition, cream text on dark background.
 Reference: Iman Gadzhi / Alex Hormozi style.
 
-## Quick Start
+## 🚀 Quick Start (5 menit)
 
-### 1. Install
-
-```bash
-npm install
-cd api && npm install && cd ..
-cd web && npm install && cd ..
-```
-
-### 2. Run UI (recommended)
+### Buat orang yang clone:
 
 ```bash
-npm run ui
+git clone https://github.com/zaidprd/broll.git
+cd broll
+./setup.bat      # Windows — install dependencies
+./start.bat      # Windows — buka UI di browser
 ```
 
-Buka http://localhost:5173 di browser.
-
-- Pilih style preset (script-hero / serif-italic / mono-bold)
-- Edit text per element
-- Atur font, animasi, posisi, ukuran
-- Toggle SFX on/off + volume
-- Klik **Generate MP4**
-- Preview langsung di form, download setelah selesai
-
-### 3. Run CLI (alternative)
+Atau di macOS/Linux:
 
 ```bash
-# Lihat preset
-node scripts/broll.mjs --list
-
-# Render preset default (script-hero)
-node scripts/broll.mjs --preset script-hero --output love.mp4
-
-# Override text per element (index-based)
-node scripts/broll.mjs --preset script-hero \
-  --text 2:"love" \
-  --text 3:"yourself" \
-  --text 4:"first"
-
-# Multiple set
-node scripts/broll.mjs --preset script-hero \
-  --set 2.text="stop" \
-  --set 2.rotation="-5" \
-  --set 3.fontSize=200
+chmod +x setup.sh start.sh
+./setup.sh
+./start.sh
 ```
 
-Output: `out/<name>-<timestamp>.mp4`
+Browser otomatis terbuka ke **http://localhost:5173**.
 
-## Style Presets
+### Cara pakai (30 detik)
 
-| ID | Hero font | Cocok untuk |
-|---|---|---|
-| `script-hero` | Great Vibes (calligraphy) | Kata hero pendek (find, stop, love) |
-| `serif-italic` | Instrument Serif italic | Teks hero medium (premium editorial) |
-| `mono-bold` | JetBrains Mono bold | Tech / SaaS / AI content |
+1. Pilih **style preset** di sidebar (script-hero / serif-italic / mono-bold)
+2. Edit text per element di form
+3. Klik **Generate MP4**
+4. Preview video di kiri, download di kanan
 
-Lihat deskripsi lengkap via `node scripts/broll.mjs --list`.
+## ✨ Fitur
 
-## Field Reference
+| Fitur | Detail |
+|---|---|
+| **3 layout preset** | script-hero (calligraphy), serif-italic (premium), mono-bold (tech) |
+| **7 font** | Plus Jakarta Sans, Inter, Instrument Serif, JetBrains Mono, Great Vibes, Playfair Display |
+| **7 animasi** | fade, slideUp, slideLeft, slideRight, scaleIn, wordPop, reveal |
+| **SFX otomatis** | whoosh, impact, tick sync ke animasi (procedural, no download) |
+| **Background pad** | Drone ambient subtle (toggle on/off) |
+| **Live preview** | Edit → preview di update real-time |
+| **CLI** | `node scripts/broll.mjs --preset script-hero` |
 
-Per element di preset JSON:
+## 📋 Yang dibutuhkan
 
-```json
-{
-  "text": "find",
-  "x": 660, "y": 145,
-  "fontSize": 260,
-  "font": "script",
-  "fontStyle": "normal",
-  "fontWeight": 400,
-  "letterSpacing": 0,
-  "delay": 0.35,
-  "anim": "reveal",
-  "duration": 1.0,
-  "opacity": 1,
-  "rotation": -3
-}
-```
+- Node.js 18+ ([download](https://nodejs.org))
+- Windows 10/11 / macOS / Linux
+- RAM 4 GB minimum
+- Internet (untuk first render, font di-cache)
 
-| Field | Type | Options |
-|---|---|---|
-| `font` | key | `display` / `displayItalic` / `sans` / `classic` / `mono` / `script` / `playfair` |
-| `anim` | key | `fade` / `slideUp` / `slideLeft` / `slideRight` / `scaleIn` / `wordPop` / `reveal` |
-| `rotation` | number | -4 sampai +4 (derajat editorial tilt) |
+## 📖 Dokumentasi lengkap
 
-## Audio / SFX
+- **[PANDUAN.md](PANDUAN.md)** — panduan bahasa Indonesia untuk pemula
+- **[PUSH-GUIDE.md](PUSH-GUIDE.md)** — cara push ke GitHub (untuk kontributor)
 
-Procedural via DSP, no download, no API key:
-
-- **whoosh** — sine sweep + filtered noise (untuk slideUp/slideLeft/slideRight/scaleIn)
-- **impact** — bass hit + click transient (untuk reveal/hero)
-- **tick** — high-freq click (untuk wordPop)
-- **pad** — background drone 6 detik (optional)
-
-Toggle on/off + atur volume di UI sidebar.
-
-## Struktur
+## 🛠️ Struktur
 
 ```
 broll/
-├── api/                       # Express backend
-│   ├── server.mjs             # POST /render, GET /presets, GET /fonts
-│   └── package.json
-├── web/                       # Vite + React UI
-│   ├── src/
-│   │   ├── App.tsx            # Form UI
-│   │   └── styles.css
-│   └── package.json
-├── src/                       # Remotion
-│   ├── Composition.tsx        # Main timeline (text + audio)
-│   ├── Root.tsx               # Remotion registry
-│   ├── fonts.ts               # Google Fonts loader
-│   ├── _types.ts              # TypeScript types
-│   ├── _config.generated.ts   # Auto-generated preset (jangan edit manual)
-│   └── sfx/
-│       ├── synth.ts           # Procedural SFX DSP
-│       └── mapper.ts          # anim → SFX mapping
-├── presets/                   # Layout presets
-│   ├── script-hero.json       # Great Vibes hero
-│   ├── serif-italic.json      # Instrument Serif hero
-│   └── mono-bold.json         # JetBrains Mono hero
-├── scripts/
-│   └── broll.mjs              # CLI: preset → render
-└── out/                       # Generated MP4
+├── src/              # Remotion engine (composition, fonts, SFX synthesis)
+├── presets/          # Layout preset (JSON, bisa edit)
+├── api/              # Backend Express (POST /render)
+├── web/              # UI Vite + React (form editor)
+├── out/              # Output MP4
+├── scripts/          # CLI tools
+├── setup.bat         # Install dependencies
+├── start.bat         # Run UI
+└── stop.bat          # Stop services
 ```
 
-## Development
+## 🎨 Kustomisasi
 
-```bash
-npm run studio           # Remotion Studio (http://localhost:3000)
-npm run ui               # UI lengkap (API + Vite concurrently)
-npm run b-roll:script    # Quick render via CLI
-```
+### Tambah preset baru
 
-## Catatan
+1. Copy `presets/script-hero.json` → `presets/nama-baru.json`
+2. Edit array `elements` di file baru
+3. Save — UI auto-detect saat dibuka
 
-- Canvas: 1280×720, 30fps, 6 detik (180 frame)
-- Output MP4: ~480 KB, video H.264 + audio AAC
-- Audio procedural: 6 SFX generator + 1 background pad, fully offline
-- Zero external dependency untuk SFX (tidak perlu download, tidak perlu API key)
+### Edit preset manual
+
+Buka file JSON di text editor, ubah posisi/text/font, save. UI reload otomatis.
+
+### Tambah font
+
+1. Import CSS di `src/fonts.ts`:
+   ```ts
+   import "@fontsource/nama-font/400.css";
+   ```
+2. Tambah ke `fonts` object:
+   ```ts
+   export const fonts = {
+     ...,
+     namaFont: "Font Family Name",
+   };
+   ```
+3. Tambah label di `api/server.mjs` endpoint `/fonts`
+
+## 📦 Tech stack
+
+- **Remotion** — React-based video framework
+- **Express** — API backend
+- **Vite + React** — Web UI
+- **@remotion/google-fonts** — Font loading
+- **Web Audio API** (prosedural SFX) — no audio file dependencies
+
+## 📝 Lisensi
+
+Personal use. Google Fonts mengikuti lisensi masing-masing (semua open source).
+
+## 🐛 Bug / Request
+
+Buka issue di https://github.com/zaidprd/broll/issues

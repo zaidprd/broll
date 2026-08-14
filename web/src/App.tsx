@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from "react";
 
 type FontOpt = { id: string; label: string; sample: string };
 type AnimOpt = { id: string; label: string };
+type SfxOpt = { id: string; label: string };
+type CustomSfxFile = { name: string; label: string };
 type PresetElement = {
   index: number;
   text: string;
@@ -16,6 +18,9 @@ type PresetElement = {
   y: number;
   fontSize: number;
   rotation?: number;
+  sfx?: string;
+  sfxFile?: string;
+  sfxStart?: number;
 };
 type Preset = {
   id: string;
@@ -32,6 +37,9 @@ type LineState = {
   y: number;
   fontSize: number;
   rotation: number;
+  sfx: string;
+  sfxFile: string;
+  sfxStart: number;
 };
 
 // Sample font stack for swatch preview
@@ -51,6 +59,8 @@ export default function App() {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [fonts, setFonts] = useState<FontOpt[]>([]);
   const [anims, setAnims] = useState<AnimOpt[]>([]);
+  const [sfxOptions, setSfxOptions] = useState<SfxOpt[]>([]);
+  const [customSfxFiles, setCustomSfxFiles] = useState<CustomSfxFile[]>([]);
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [name, setName] = useState<string>("broll");
   const [lines, setLines] = useState<LineState[]>([]);
@@ -79,10 +89,13 @@ export default function App() {
     Promise.all([
       fetch(`${API}/presets`).then((r) => r.json()),
       fetch(`${API}/fonts`).then((r) => r.json()),
-    ]).then(([p, f]) => {
+      fetch(`${API}/custom-sfx`).then((r) => r.json()),
+    ]).then(([p, f, c]) => {
       setPresets(p.presets);
       setFonts(f.fonts);
       setAnims(f.anims);
+      setSfxOptions(f.sfx || []);
+      setCustomSfxFiles(c.files || []);
       if (p.presets.length > 0) selectPreset(p.presets[0]);
     });
   }, []);
@@ -98,6 +111,9 @@ export default function App() {
         y: el.y,
         fontSize: el.fontSize,
         rotation: el.rotation ?? 0,
+        sfx: el.sfx ?? "auto",
+        sfxFile: el.sfxFile ?? "",
+        sfxStart: el.sfxStart ?? 0,
       }))
     );
     setVideoUrl(null);
@@ -141,6 +157,9 @@ export default function App() {
         y: 500,
         fontSize: 60,
         rotation: 0,
+        sfx: "auto",
+        sfxFile: "",
+        sfxStart: 0,
       },
     ]);
   }
@@ -167,6 +186,9 @@ export default function App() {
             y: l.y,
             fontSize: l.fontSize,
             rotation: l.rotation,
+            sfx: l.sfx,
+            sfxFile: l.sfxFile,
+            sfxStart: l.sfxStart,
           })),
           audio: {
             sfxEnabled,
@@ -481,6 +503,24 @@ export default function App() {
                   </div>
 
                   <div className="line-field">
+                    <label>SFX</label>
+                    <select
+                      value={line.sfx}
+                      onChange={(e) =>
+                        updateLine(idx, { sfx: e.target.value })
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                      title="Pilih suara yang main pas element ini muncul"
+                    >
+                      {sfxOptions.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="line-field">
                     <label>Size</label>
                     <input
                       type="number"
@@ -531,6 +571,53 @@ export default function App() {
                       />
                     </div>
                   </div>
+
+                  {line.sfx === "custom" && (
+                    <div className="line-field span2">
+                      <label>Custom SFX file</label>
+                      {customSfxFiles.length > 0 ? (
+                        <select
+                          value={line.sfxFile}
+                          onChange={(e) =>
+                            updateLine(idx, { sfxFile: e.target.value })
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <option value="">— pilih file —</option>
+                          {customSfxFiles.map((f) => (
+                            <option key={f.name} value={f.name}>
+                              {f.label}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <div className="hint">
+                          Taruh file audio di <code>public/sfx-custom/</code>,
+                          kemudian refresh halaman.
+                          <br />
+                          Format: .wav, .mp3, .ogg, .m4a
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {line.sfx === "custom" && line.sfxFile && (
+                    <div className="line-field">
+                      <label>Start offset (s)</label>
+                      <input
+                        type="number"
+                        value={line.sfxStart}
+                        step="0.1"
+                        min="0"
+                        onChange={(e) =>
+                          updateLine(idx, {
+                            sfxStart: Number(e.target.value),
+                          })
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

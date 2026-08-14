@@ -15,3 +15,7 @@ preview/
 
 # Auto-generated
 src/_config.generated.ts
+
+# Custom SFX (user uploads)
+public/sfx-custom/*
+!public/sfx-custom/README.md

@@ -541,6 +541,25 @@ select {
   font-size: 12px;
 }
 
+.hint {
+  font-size: 11px;
+  color: var(--text-faint);
+  padding: 8px 10px;
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  line-height: 1.5;
+}
+
+.hint code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  background: var(--panel-3);
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+
 /* ─── Buttons ─── */
 .btn {
   width: 100%;

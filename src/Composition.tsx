@@ -7,12 +7,16 @@
 //
 // SFX: procedural via Web Audio API synthesis (src/sfx/synth.ts).
 // Tidak ada file audio eksternal, tidak ada API key.
+// Per-element SFX override via element.sfx field:
+//   "auto" | "whoosh" | "impact" | "tick" | "riser" | "click" | "silent" | "custom"
+// Custom SFX: taruh file di public/sfx-custom/<name>.wav, set sfx="custom" + sfxFile="<name>.wav"
 // ============================================================
 
 import React from "react";
 import {
   AbsoluteFill,
   Audio,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
   interpolate,
@@ -22,7 +26,7 @@ import type { ElementConfig } from "./_types";
 import { GENERATED_CONFIG } from "./_config.generated";
 import type { AudioConfig } from "./_types";
 import { getSfxUrl, type SfxType } from "./sfx/synth";
-import { sfxForAnim } from "./sfx/mapper";
+import { resolveSfx } from "./sfx/mapper";
 
 // ─── Theme constants ───
 const BG = "#0A0A0A";
@@ -56,6 +60,9 @@ const Txt: React.FC<
   duration = 0.73,
   opacity: peakOpacity = 1,
   rotation = 0,
+  sfx,
+  sfxFile,
+  sfxStart = 0,
   sfxEnabled,
   sfxVolume,
 }) => {
@@ -93,16 +100,33 @@ const Txt: React.FC<
     }
   }
 
-  // SFX trigger — play once at element's delay
-  const sfxType = sfxEnabled ? sfxForAnim(anim) : null;
+  // SFX trigger
+  const resolved = sfxEnabled ? resolveSfx(sfx, anim) : null;
+  const sfxType = resolved === "custom" ? null : resolved;
+  const customFile = resolved === "custom" && sfxFile ? sfxFile : null;
+
+  // Audio element time bounds
+  const audioStartFrame = Math.round((delay + sfxStart) * fps);
+  // For procedural SFX, end at delay + 0.8s. For custom, end at video duration.
+  const audioEndFrame = customFile
+    ? fps * DURATION
+    : Math.round((delay + sfxStart + 0.8) * fps);
 
   return (
     <>
       {sfxType && (
         <Audio
           src={SFX_URLS[sfxType]}
-          startFrom={Math.round(delay * fps)}
-          endAt={Math.round((delay + 0.8) * fps)}
+          startFrom={audioStartFrame}
+          endAt={audioEndFrame}
+          volume={sfxVolume}
+        />
+      )}
+      {customFile && (
+        <Audio
+          src={staticFile(`sfx-custom/${customFile}`)}
+          startFrom={audioStartFrame}
+          endAt={audioEndFrame}
           volume={sfxVolume}
         />
       )}

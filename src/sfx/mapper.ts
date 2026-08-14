@@ -1,12 +1,40 @@
 // src/sfx/mapper.ts
 // ============================================================
 // Map animation presets to SFX types.
-// Returns null for animations that should be silent.
+// With override support per element.
 // ============================================================
 
 import type { Anim } from "../_types";
 import type { SfxType } from "./synth";
 
+export type SfxChoice = "auto" | SfxType | "silent" | "custom";
+
+/**
+ * Resolve SFX choice for an element.
+ * - "auto" → use animation-based default
+ * - "silent" → no SFX
+ * - "custom" → handled by caller (uses sfxFile)
+ * - specific type → use that SFX
+ */
+export function resolveSfx(
+  choice: SfxChoice | undefined,
+  anim: Anim,
+): SfxType | null | "custom" {
+  if (!choice || choice === "auto") {
+    return sfxForAnim(anim);
+  }
+  if (choice === "silent") {
+    return null;
+  }
+  if (choice === "custom") {
+    return "custom";
+  }
+  return choice;
+}
+
+/**
+ * Default animation → SFX mapping.
+ */
 export function sfxForAnim(anim: Anim): SfxType | null {
   switch (anim) {
     case "reveal":

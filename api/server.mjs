@@ -57,6 +57,9 @@ app.post("/render", async (req, res) => {
     if (typeof ln.y === "number") el.y = ln.y;
     if (typeof ln.fontSize === "number") el.fontSize = ln.fontSize;
     if (typeof ln.rotation === "number") el.rotation = ln.rotation;
+    if (typeof ln.sfx === "string") el.sfx = ln.sfx;
+    if (typeof ln.sfxFile === "string") el.sfxFile = ln.sfxFile;
+    if (typeof ln.sfxStart === "number") el.sfxStart = ln.sfxStart;
   }
 
   // Audio defaults
@@ -110,6 +113,22 @@ export const GENERATED_CONFIG: GeneratedConfig = ${JSON.stringify(
   });
 });
 
+// ─── GET /custom-sfx ───
+app.get("/custom-sfx", (req, res) => {
+  const CUSTOM_SFX_DIR = join(ROOT, "public", "sfx-custom");
+  if (!existsSync(CUSTOM_SFX_DIR)) {
+    return res.json({ files: [] });
+  }
+  const audioExt = [".wav", ".mp3", ".ogg", ".m4a", ".flac"];
+  const files = readdirSync(CUSTOM_SFX_DIR)
+    .filter((f) => audioExt.some((ext) => f.toLowerCase().endsWith(ext)))
+    .map((f) => ({
+      name: f,
+      label: f.replace(/\.[^.]+$/, "").replace(/[-_]/g, " "),
+    }));
+  res.json({ files });
+});
+
 // ─── GET /presets ───
 app.get("/presets", async (req, res) => {
   const { readdirSync, readFileSync } = await import("node:fs");
@@ -155,6 +174,16 @@ app.get("/fonts", (req, res) => {
       { id: "scaleIn", label: "Scale in" },
       { id: "wordPop", label: "Word pop" },
       { id: "reveal", label: "Reveal (slow, for hero)" },
+    ],
+    sfx: [
+      { id: "auto", label: "Auto (from animation)" },
+      { id: "whoosh", label: "Whoosh" },
+      { id: "impact", label: "Impact (bass hit)" },
+      { id: "tick", label: "Tick (click)" },
+      { id: "riser", label: "Riser (buildup)" },
+      { id: "click", label: "Click" },
+      { id: "silent", label: "Silent (no SFX)" },
+      { id: "custom", label: "Custom file (dari public/sfx-custom/)" },
     ],
   });
 });

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <title>Editorial Typography Reference</title>
+  <desc>
+    Premium editorial typography composition inspired by the supplied reference:
+    small sans text at upper left, oversized italic serif hero word in the center,
+    and oversized bold sans phrase across the lower portion.
+  </desc>
+
+  <g id="editorial-typography" data-layout="asymmetric-overlap" fill="#F3F0E8">
+    <!-- small top line -->
+    <text id="line-top"
+          x="185" y="180"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="54"
+          font-weight="500"
+          letter-spacing="-2"
+          data-role="supporting">
+      you'll never need
+    </text>
+
+    <!-- small connector -->
+    <text id="line-connector"
+          x="535" y="250"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="48"
+          font-weight="500"
+          letter-spacing="-2"
+          data-role="connector">
+      to
+    </text>
+
+    <!-- hero serif italic word -->
+    <text id="hero-word"
+          x="650" y="255"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="154"
+          font-weight="400"
+          font-style="italic"
+          letter-spacing="-7"
+          data-role="hero"
+          data-accent="serif-italic">
+      find
+    </text>
+
+    <!-- large lower headline -->
+    <text id="line-bottom"
+          x="165" y="410"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="132"
+          font-weight="700"
+          letter-spacing="-7"
+          data-role="headline">
+      clients
+    </text>
+
+    <text id="line-bottom-right"
+          x="735" y="405"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="92"
+          font-weight="600"
+          letter-spacing="-5"
+          data-role="supporting">
+      ever again
+    </text>
+
+    <!-- subtle secondary word behind/under hero, matching editorial overlap -->
+    <text id="line-secondary"
+          x="480" y="315"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="46"
+          font-weight="600"
+          letter-spacing="-2"
+          opacity="0.88"
+          data-role="secondary">
+      clients
+    </text>
+  </g>
+</svg>

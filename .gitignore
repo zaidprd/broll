@@ -1,0 +1,17 @@
+node_modules/
+out/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+*.log
+npm-debug.log*
+.DS_Store
+.vscode/
+.idea/
+nul
+preview/
+
+# Auto-generated
+src/_config.generated.ts

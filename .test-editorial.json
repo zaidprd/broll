@@ -1,0 +1,82 @@
+{
+  "title": "Rahasia Closing",
+  "duration": 8,
+  "color_theme": "lime",
+  "scenes": [
+    {
+      "type": "kinetic",
+      "duration": 4,
+      "elements": [
+        {
+          "text": "RAHASIA",
+          "font_style": "display",
+          "fontSize": 112,
+          "x": 120,
+          "y": 150,
+          "rotation": -2,
+          "color": "text",
+          "animation": "slideUp",
+          "start": 0,
+          "duration": 1.2,
+          "emphasis": false
+        },
+        {
+          "text": "CLOSING",
+          "font_style": "classic",
+          "fontSize": 210,
+          "x": 300,
+          "y": 310,
+          "rotation": -2,
+          "color": "primary",
+          "animation": "wordPop",
+          "start": 1,
+          "duration": 1.6,
+          "emphasis": true
+        },
+        {
+          "text": "HIGH",
+          "font_style": "display",
+          "fontSize": 96,
+          "x": 160,
+          "y": 525,
+          "rotation": 1,
+          "color": "text",
+          "animation": "slideLeft",
+          "start": 1.7,
+          "duration": 1.1,
+          "emphasis": false
+        },
+        {
+          "text": "TICKET",
+          "font_style": "display",
+          "fontSize": 96,
+          "x": 610,
+          "y": 535,
+          "rotation": -1,
+          "color": "text",
+          "animation": "slideRight",
+          "start": 2,
+          "duration": 1.2,
+          "emphasis": false
+        }
+      ]
+    },
+    {
+      "type": "counter",
+      "from": 0,
+      "to": 1000000000,
+      "prefix": "Rp",
+      "suffix": "MILIAR",
+      "duration": 2.5,
+      "font_style": "mono"
+    },
+    {
+      "type": "quote",
+      "text": "BUKAN TEKNIK. NYALI.",
+      "style": "pop",
+      "duration": 1.5,
+      "font_style": "display",
+      "italic": false
+    }
+  ]
+}

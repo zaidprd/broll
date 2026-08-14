@@ -1,0 +1,104 @@
+{
+  "name": "Mono Bold (techy/editorial)",
+  "description": "Mono JetBrains Mono sebagai hero. Techy, modern, bold. Cocok untuk SaaS/AI/dev content.",
+  "elements": [
+    {
+      "text": "you'll never need",
+      "x": 120, "y": 110,
+      "fontSize": 72,
+      "font": "sans",
+      "fontWeight": 500,
+      "letterSpacing": -0.045,
+      "delay": 0.0,
+      "anim": "slideUp"
+    },
+    {
+      "text": "to",
+      "x": 555, "y": 205,
+      "fontSize": 64,
+      "font": "sans",
+      "fontStyle": "italic",
+      "fontWeight": 400,
+      "letterSpacing": -0.04,
+      "delay": 0.18,
+      "anim": "slideLeft"
+    },
+    {
+      "text": "find",
+      "x": 670, "y": 155,
+      "fontSize": 180,
+      "font": "mono",
+      "fontWeight": 800,
+      "letterSpacing": -0.05,
+      "delay": 0.35,
+      "anim": "scaleIn",
+      "duration": 1.0,
+      "rotation": -2
+    },
+    {
+      "text": "clients",
+      "x": 110, "y": 355,
+      "fontSize": 172,
+      "font": "display",
+      "fontWeight": 800,
+      "letterSpacing": -0.06,
+      "delay": 0.6,
+      "anim": "slideUp"
+    },
+    {
+      "text": "ever again",
+      "x": 735, "y": 395,
+      "fontSize": 122,
+      "font": "display",
+      "fontWeight": 700,
+      "letterSpacing": -0.055,
+      "delay": 0.85,
+      "anim": "wordPop"
+    },
+    {
+      "text": "—",
+      "x": 115, "y": 540,
+      "fontSize": 56,
+      "font": "classic",
+      "fontStyle": "italic",
+      "fontWeight": 400,
+      "delay": 1.25,
+      "anim": "fade",
+      "opacity": 0.5
+    },
+    {
+      "text": "ever again.",
+      "x": 175, "y": 572,
+      "fontSize": 40,
+      "font": "classic",
+      "fontStyle": "italic",
+      "fontWeight": 400,
+      "letterSpacing": -0.02,
+      "delay": 1.4,
+      "anim": "fade",
+      "opacity": 0.6
+    },
+    {
+      "text": "NO.",
+      "x": 1130, "y": 115,
+      "fontSize": 28,
+      "font": "mono",
+      "fontWeight": 800,
+      "letterSpacing": 0.04,
+      "delay": 0.1,
+      "anim": "fade",
+      "opacity": 0.7
+    },
+    {
+      "text": "01",
+      "x": 1130, "y": 145,
+      "fontSize": 28,
+      "font": "mono",
+      "fontWeight": 800,
+      "letterSpacing": 0.04,
+      "delay": 0.2,
+      "anim": "fade",
+      "opacity": 0.5
+    }
+  ]
+}

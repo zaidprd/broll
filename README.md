@@ -1,116 +1,137 @@
 # Broll Studio
 
-Generate **editorial kinetic typography B-roll** videos (≤6 detik) untuk YouTube, Reels, TikTok.
+Aplikasi buat bikin video B-roll **kinetic typography** pendek (maks 6 detik)
+untuk konten YouTube, Reels, TikTok, Shorts.
 
-Style: premium editorial typography, asymmetric composition, cream text on dark background.
-Reference: Iman Gadzhi / Alex Hormozi style.
+Style: typography besar yang aesthetic, warna cream di background gelap,
+animasi masuk yang smooth. Cocok buat video Iman Gadzhi / Alex Hormozi style.
 
-## 🚀 Quick Start (5 menit)
+---
 
-### Buat orang yang clone:
+## 🚀 Cara Install (5 menit)
+
+### Buat yang baru clone repo ini:
 
 ```bash
 git clone https://github.com/zaidprd/broll.git
 cd broll
-./setup.bat      # Windows — install dependencies
-./start.bat      # Windows — buka UI di browser
 ```
 
-Atau di macOS/Linux:
+Terus klik dua kali file **`setup.bat`** (kalau di Windows).
 
-```bash
-chmod +x setup.sh start.sh
-./setup.sh
-./start.sh
-```
+Tunggu sampai selesai. Itu download semua yang dibutuhkan (~280 MB).
 
-Browser otomatis terbuka ke **http://localhost:5173**.
+---
 
-### Cara pakai (30 detik)
+## ▶️ Cara Jalanin
 
-1. Pilih **style preset** di sidebar (script-hero / serif-italic / mono-bold)
-2. Edit text per element di form
+Klik dua kali **`start.bat`**.
+
+Otomatis kebuka:
+- **API backend** di port 3001
+- **Web UI** di browser kamu: http://localhost:5173
+
+### Cara make (30 detik):
+
+1. Pilih **style preset** di sidebar kanan (script-hero / serif-italic / mono-bold)
+2. Edit kata-katanya di form
 3. Klik **Generate MP4**
-4. Preview video di kiri, download di kanan
+4. Video muncul di preview kiri, download di kanan
+
+**Stop**: klik dua kali `stop.bat`.
+
+---
 
 ## ✨ Fitur
 
-| Fitur | Detail |
-|---|---|
-| **3 layout preset** | script-hero (calligraphy), serif-italic (premium), mono-bold (tech) |
-| **7 font** | Plus Jakarta Sans, Inter, Instrument Serif, JetBrains Mono, Great Vibes, Playfair Display |
-| **7 animasi** | fade, slideUp, slideLeft, slideRight, scaleIn, wordPop, reveal |
-| **SFX otomatis** | whoosh, impact, tick sync ke animasi (procedural, no download) |
-| **Background pad** | Drone ambient subtle (toggle on/off) |
-| **Live preview** | Edit → preview di update real-time |
-| **CLI** | `node scripts/broll.mjs --preset script-hero` |
+- **3 layout preset** siap pakai
+- **7 font** pilihan (sans, serif, calligraphy, mono)
+- **7 animasi** masuk (fade, slide, scale, dll)
+- **SFX otomatis** — suara whoosh/impact/tick nyambung ke animasi
+- **Background pad** — musik ambient halus
+- **Live preview** — edit langsung keliatan hasilnya
+- **CLI** juga tersedia
 
-## 📋 Yang dibutuhkan
+---
 
-- Node.js 18+ ([download](https://nodejs.org))
-- Windows 10/11 / macOS / Linux
-- RAM 4 GB minimum
-- Internet (untuk first render, font di-cache)
-
-## 📖 Dokumentasi lengkap
-
-- **[PANDUAN.md](PANDUAN.md)** — panduan bahasa Indonesia untuk pemula
-- **[PUSH-GUIDE.md](PUSH-GUIDE.md)** — cara push ke GitHub (untuk kontributor)
-
-## 🛠️ Struktur
+## 📁 Struktur Folder
 
 ```
 broll/
-├── src/              # Remotion engine (composition, fonts, SFX synthesis)
-├── presets/          # Layout preset (JSON, bisa edit)
-├── api/              # Backend Express (POST /render)
-├── web/              # UI Vite + React (form editor)
-├── out/              # Output MP4
-├── scripts/          # CLI tools
-├── setup.bat         # Install dependencies
-├── start.bat         # Run UI
-└── stop.bat          # Stop services
+├── src/              Engine Remotion (jangan diedit)
+├── presets/          Layout preset (boleh diedit)
+├── api/              Backend server
+├── web/              UI form editor
+├── out/              Hasil video MP4
+├── setup.bat         Install dependencies
+├── start.bat         Jalanin UI
+└── stop.bat          Stop semua
 ```
 
+---
+
 ## 🎨 Kustomisasi
+
+### Ganti kata-kata
+
+Buka file `presets/script-hero.json` di text editor (Notepad / VS Code).
+Edit array `elements` — ganti `text`, `x`, `y`, `fontSize`, dll.
+Save. UI reload otomatis.
 
 ### Tambah preset baru
 
 1. Copy `presets/script-hero.json` → `presets/nama-baru.json`
-2. Edit array `elements` di file baru
-3. Save — UI auto-detect saat dibuka
-
-### Edit preset manual
-
-Buka file JSON di text editor, ubah posisi/text/font, save. UI reload otomatis.
+2. Edit isinya
+3. Save — preset baru muncul di UI
 
 ### Tambah font
 
-1. Import CSS di `src/fonts.ts`:
-   ```ts
-   import "@fontsource/nama-font/400.css";
-   ```
-2. Tambah ke `fonts` object:
-   ```ts
-   export const fonts = {
-     ...,
-     namaFont: "Font Family Name",
-   };
-   ```
-3. Tambah label di `api/server.mjs` endpoint `/fonts`
+Edit `src/fonts.ts` dan `api/server.mjs`. Lihat instruksi di file.
 
-## 📦 Tech stack
+---
 
-- **Remotion** — React-based video framework
-- **Express** — API backend
-- **Vite + React** — Web UI
-- **@remotion/google-fonts** — Font loading
-- **Web Audio API** (prosedural SFX) — no audio file dependencies
+## 💡 Tips
+
+- Pakai **rotation -3 sampai +3** untuk efek editorial tilt
+- Pakai **font size 150-200** untuk hero word
+- Kombinasikan **display bold** (text utama) + **classic serif italic** (aksen)
+- **Jangan** pakai lebih dari 2 font di 1 scene
+
+---
+
+## 📋 Yang Dibutuhkan
+
+- Node.js 18+ (download di https://nodejs.org)
+- Windows 10/11 / macOS / Linux
+- RAM 4 GB minimum
+- Internet (untuk render pertama, font di-cache)
+
+---
+
+## 🐛 Troubleshooting
+
+**Browser gak kebuka otomatis?**
+→ Buka manual http://localhost:5173
+
+**Generate gagal?**
+→ Cek dulu API server jalan (port 3001)
+→ Buka window kedua, jalanin `start.bat` lagi
+
+**Port 3001 / 5173 sudah dipake?**
+→ Tutup aplikasi yang pake port itu, atau restart PC
+
+**Font gak muncul?**
+→ Pastikan internet aktif (download font dari Google Fonts)
+→ Tunggu 10-20 detik untuk render pertama
+
+---
+
+## 📖 Lebih Lengkap
+
+Lihat **[PANDUAN.md](PANDUAN.md)** — tutorial step-by-step untuk pemula.
+
+---
 
 ## 📝 Lisensi
 
-Personal use. Google Fonts mengikuti lisensi masing-masing (semua open source).
-
-## 🐛 Bug / Request
-
-Buka issue di https://github.com/zaidprd/broll/issues
+Pakai pribadi. Font dari Google Fonts (semua open source).

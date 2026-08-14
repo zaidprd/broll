@@ -99,6 +99,27 @@ Edit `src/fonts.ts` dan `api/server.mjs`. Lihat instruksi di file.
 
 ---
 
+## 🔊 Custom SFX
+
+Default SFX otomatis sync ke animasi. Kalau mau custom:
+
+1. Taruh file audio (`.wav`, `.mp3`, `.ogg`) di `public/sfx-custom/`
+2. Refresh UI
+3. Pilih element → SFX dropdown → **custom** → pilih file
+
+Tipe SFX yang tersedia:
+
+- `auto` — pakai default (whoosh untuk slide, impact untuk reveal, dll)
+- `whoosh` — suara hembusan
+- `impact` — bass hit dramatis
+- `tick` — click kecil
+- `riser` — buildup naik (bagus untuk hero)
+- `click` — click pendek
+- `silent` — tidak ada SFX
+- `custom` — file sendiri
+
+---
+
 ## 📋 Yang Dibutuhkan
 
 - Node.js 18+ (download di https://nodejs.org)

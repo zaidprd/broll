@@ -14,6 +14,8 @@ const typographyPropsSchema = z.object({
   fontStyle: z.enum(["normal", "italic"]).optional(), fontWeight: z.number().int().min(100).max(1000).optional(),
   fontSize: z.number().positive().max(600), letterSpacing: z.number().min(-1).max(1).optional(),
   maxWidth: z.number().positive().max(4000).optional(), textAlign: z.enum(["left", "center", "right"]).optional(),
+  color: z.string().min(1).optional(),
+  highlight: z.object({ word: z.string().min(1), color: z.string().min(1).optional() }).optional(),
   rotation: z.number().min(-20).max(20).optional(), opacity: z.number().min(0).max(1).optional(),
   sfx, sfxFile: z.string().min(1).optional(), sfxOffset: z.number().min(-3).max(3).optional(),
 });
@@ -35,6 +37,14 @@ const spotlightProps = z.object({ rect: z.tuple([z.number(), z.number(), z.numbe
 const deviceProps = z.object({ position, width: z.number().positive().optional(), height: z.number().positive().optional(), title: z.string().optional(), frame: z.enum(["phone", "browser"]).optional() });
 const iconProps = z.object({ position, name: z.string(), size: z.number().positive().optional(), color: z.string().optional() });
 const audioClipProps = z.object({ asset: z.string().min(1), volume: z.number().min(0).max(1).optional() });
+const mediaProps = z.object({
+  asset: z.string().min(1),
+  layout: z.object({ position, width: z.number().positive(), height: z.number().positive() }),
+  fit: z.enum(["cover", "contain"]).optional(),
+  opacity: z.number().min(0).max(1).optional(),
+  overlay: z.number().min(0).max(1).optional(),
+  radius: z.number().min(0).max(200).optional(),
+});
 
 const schemas = {
   "typography.headline": typographyPropsSchema,
@@ -57,6 +67,8 @@ const schemas = {
   "device.frame": deviceProps,
   icon: iconProps,
   "audio.clip": audioClipProps,
+  "media.image": mediaProps,
+  "media.video": mediaProps,
 } as const;
 
 export type ComponentKind = keyof typeof schemas;
@@ -77,5 +89,5 @@ export const COMPONENT_FAMILIES = {
   typography: ["typography.headline", "typography.body", "typography.label"],
   ui: ["ui.browser", "ui.notification", "ui.appGrid", "ui.checklist", "ui.progress", "ui.terminal", "ui.cursor"],
   workflow: ["workflow.flow"], charts: ["chart.metric", "chart.comparison", "chart.bar", "chart.counter"],
-  callouts: ["callout.pointer"], effects: ["effect.spotlight"], devices: ["device.frame"], icons: ["icon"], audio: ["audio.clip"],
+  callouts: ["callout.pointer"], effects: ["effect.spotlight"], devices: ["device.frame"], icons: ["icon"], media: ["media.image", "media.video"], audio: ["audio.clip"],
 } as const;

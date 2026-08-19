@@ -20,9 +20,13 @@ const PRESETS_DIR = join(ROOT, "presets");
 const OUT_DIR = join(ROOT, "out");
 const JOBS_DIR = join(OUT_DIR, "jobs");
 const CUSTOM_SFX_DIR = join(ROOT, "public", "sfx-custom");
+const MEDIA_DIR = join(ROOT, "public", "uploads");
 const AUDIO_EXTENSIONS = new Set([".wav", ".mp3", ".ogg", ".m4a", ".flac"]);
+const IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif"]);
+const VIDEO_EXTENSIONS = new Set([".mp4", ".webm", ".mov"]);
 
 mkdirSync(CUSTOM_SFX_DIR, { recursive: true });
+mkdirSync(MEDIA_DIR, { recursive: true });
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -41,6 +45,23 @@ const upload = multer({
   fileFilter: (req, file, callback) => {
     const extension = extname(file.originalname).toLowerCase();
     callback(null, AUDIO_EXTENSIONS.has(extension));
+  },
+});
+
+const mediaUpload = multer({
+  storage: multer.diskStorage({
+    destination: MEDIA_DIR,
+    filename: (req, file, callback) => {
+      const extension = extname(file.originalname).toLowerCase();
+      const baseName = file.originalname.slice(0, -extension.length)
+        .replace(/[^a-zA-Z0-9-_]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") || "editorial-media";
+      callback(null, `${Date.now()}-${baseName}${extension}`);
+    },
+  }),
+  limits: { fileSize: 250 * 1024 * 1024 },
+  fileFilter: (req, file, callback) => {
+    const extension = extname(file.originalname).toLowerCase();
+    callback(null, IMAGE_EXTENSIONS.has(extension) || VIDEO_EXTENSIONS.has(extension));
   },
 });
 
@@ -241,6 +262,23 @@ app.post("/render-project", (req, res) => {
     return res.status(400).json({ error: "MotionProject V1 tidak valid." });
   }
   return startMotionRender(res, project, audio, name || project.title);
+});
+
+// ─── POST /motion-assets ───
+// Upload image/video local untuk editorial footage, card, atau object visual.
+app.post("/motion-assets", mediaUpload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "Pilih gambar PNG/JPG/WEBP/GIF atau video MP4/WEBM/MOV (maks. 250 MB)." });
+  }
+  const extension = extname(req.file.filename).toLowerCase();
+  const type = IMAGE_EXTENSIONS.has(extension) ? "image" : "video";
+  const baseId = req.file.filename.slice(0, -extension.length).replace(/[^a-zA-Z0-9-_]/g, "-");
+  return res.status(201).json({ asset: {
+    id: `media-${baseId}`,
+    type,
+    src: `uploads/${req.file.filename}`,
+    label: req.file.originalname,
+  } });
 });
 
 // ─── GET /custom-sfx ───

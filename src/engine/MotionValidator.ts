@@ -57,13 +57,14 @@ export function validateMotionProject(project: MotionProject): MotionDiagnostic[
           }
         }
 
-        if (clip.kind === "audio.clip") {
+        if (clip.kind === "audio.clip" || clip.kind === "media.image" || clip.kind === "media.video") {
           const assetId = clip.props.asset;
           const asset = typeof assetId === "string" ? project.assets[assetId] : undefined;
+          const expectedType = clip.kind === "audio.clip" ? "audio" : clip.kind === "media.image" ? "image" : "video";
           if (!asset) {
-            diagnostics.push({ level: "error", path: `${path}.props.asset`, message: "Audio asset tidak ditemukan." });
-          } else if (asset.type !== "audio") {
-            diagnostics.push({ level: "error", path: `${path}.props.asset`, message: "Asset untuk audio.clip harus bertipe audio." });
+            diagnostics.push({ level: "error", path: `${path}.props.asset`, message: `Asset untuk ${clip.kind} tidak ditemukan.` });
+          } else if (asset.type !== expectedType) {
+            diagnostics.push({ level: "error", path: `${path}.props.asset`, message: `Asset untuk ${clip.kind} harus bertipe ${expectedType}.` });
           }
         }
 

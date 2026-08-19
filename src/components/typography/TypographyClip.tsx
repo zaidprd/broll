@@ -30,6 +30,8 @@ type TypographyProps = {
   /** Lebar teks. Bila tidak diisi, engine memakai safe area otomatis. */
   maxWidth?: number;
   textAlign?: "left" | "center" | "right";
+  color?: string;
+  highlight?: { word: string; color?: string };
   rotation?: number;
   opacity?: number;
   sfx?: "auto" | "whoosh" | "impact" | "tick" | "riser" | "click" | "silent" | "custom";
@@ -68,6 +70,7 @@ export const TypographyClip: React.FC<{
 
   const safeTextWidth = Math.max(240, width - props.layout.position[0] - 80);
   const maxWidth = props.maxWidth ?? safeTextWidth;
+  const markerProgress = interpolate(frame, [Math.max(0, animationDuration - 4), animationDuration + 8], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const peakOpacity = props.opacity ?? 1;
   const opacity = interpolate(
     frame,
@@ -104,7 +107,7 @@ export const TypographyClip: React.FC<{
           fontWeight: props.fontWeight ?? 400,
           fontSize: props.fontSize,
           lineHeight: 1,
-          color: CREAM,
+          color: props.color ?? CREAM,
           letterSpacing: `${props.letterSpacing ?? 0}em`,
           transform: `translate(${props.layout.position[0] + tx}px, ${props.layout.position[1] + ty}px) rotate(${props.rotation ?? 0}deg) scale(${scale})`,
           transformOrigin: "top left",
@@ -117,7 +120,12 @@ export const TypographyClip: React.FC<{
           userSelect: "none",
         }}
       >
-        {props.text}
+        {props.highlight?.word ? props.text.split(new RegExp(`(${props.highlight.word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi")).map((part, index) => part.toLowerCase() === props.highlight?.word.toLowerCase() ? <span key={index} style={{
+          backgroundImage: `linear-gradient(176deg, transparent 8%, ${props.highlight.color ?? "#FDE047"} 10%, ${props.highlight.color ?? "#FDE047"} 88%, transparent 91%)`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: `${markerProgress * 108}% 100%`,
+          padding: "0 0.08em",
+        }}>{part}</span> : part) : props.text}
       </div>
     </>
   );

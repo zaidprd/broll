@@ -108,6 +108,24 @@ Pengaturan dasar:
 
 `Props JSON` adalah pengaturan lanjutan. Jika Anda tidak nyaman dengan JSON, gunakan field dasar saja.
 
+### Membuat footage + typography premium
+
+Untuk gaya editorial seperti footage dengan tulisan tebal dan satu kata italic:
+
+1. Pilih scene di kiri.
+2. Di panel kanan, pada bagian **EDITORIAL TOOLS**, klik **Upload Footage / Image**.
+3. Pilih gambar atau video dari komputer Anda. Format gambar: PNG, JPG, WEBP, GIF. Format video: MP4, WEBM, MOV. Maksimum 250 MB.
+4. Setelah upload selesai, klik template yang sesuai:
+   - **Footage + Script**: teks di atas footage penuh.
+   - **Portrait Sidecard**: card media vertikal di sisi layar.
+   - **Object Editorial**: gambar besar sebagai elemen visual pendukung.
+5. Klik component judul pada Stage.
+6. Di bagian **ACCENT TYPOGRAPHY**, tulis satu kata penting, misalnya `ChatGPT` atau `Custom`.
+7. Pilih font **Great Vibes** untuk calligraphy atau **Instrument Serif italic** untuk italic editorial, lalu pilih warna accent.
+8. Klik **Apply Accent**, kemudian render ulang.
+
+Gunakan script italic hanya untuk satu keyword. Teks utama tetap memakai bold sans agar video mudah dibaca.
+
 ## 6. Component yang tersedia
 
 | Kelompok | Contoh | Kegunaan |

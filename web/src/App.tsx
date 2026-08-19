@@ -13,7 +13,7 @@ const componentOptions = [
   ["typography.headline", "Kinetic Title"], ["typography.body", "Body Text"], ["typography.label", "Mono Label"],
   ["chart.metric", "Big Number"], ["chart.comparison", "Comparison"], ["chart.bar", "Bar Chart"], ["chart.counter", "Counter"],
   ["ui.browser", "Browser Window"], ["ui.appGrid", "App Grid"], ["ui.notification", "Notification"], ["ui.checklist", "Checklist"], ["ui.progress", "Progress Bar"], ["ui.terminal", "Terminal Typing"], ["ui.cursor", "Cursor Click"],
-  ["workflow.flow", "Workflow Flow"], ["callout.pointer", "Callout"], ["effect.spotlight", "Spotlight"], ["device.frame", "Device Frame"], ["icon", "Icon"],
+  ["workflow.flow", "Workflow Flow"], ["callout.pointer", "Callout"], ["effect.spotlight", "Spotlight"], ["device.frame", "Device Frame"], ["media.image", "Image"], ["media.video", "Video"], ["icon", "Icon"],
 ] as const;
 
 const emptyProject = (): Project => ({ schemaVersion: "1.0", id: "new-project", title: "New Motion Project", format: { width: 1280, height: 720, fps: FPS, background: "#0A0A0A" }, tokens: { colors: { ink: "#0A0A0A", paper: "#F3F0E8", lime: "#A3E635" }, fonts: { display: "display", sans: "sans", mono: "mono" }, spacing: { page: 80, gap: 24 } }, assets: {}, scenes: [] });
@@ -38,6 +38,7 @@ function clipDefaults(kind: string, number: number): Clip {
   if (kind === "callout.pointer") return { ...base, props: { position: [760, 300], text: "Explain this action", side: "left" } };
   if (kind === "effect.spotlight") return { ...base, props: { rect: [150, 220, 700, 180], dimOpacity: 0.6 } };
   if (kind === "device.frame") return { ...base, props: { position: [820, 70], width: 310, height: 560, title: "Mobile App", frame: "phone" } };
+  if (kind === "media.image" || kind === "media.video") return { ...base, props: { asset: "", layout: { position: [120, 100], width: 680, height: 440 }, fit: "cover", overlay: 0.2, radius: 8 } };
   return { ...base, props: { position: [120, 120], name: "sparkles", size: 80, color: "#A3E635" } };
 }
 
@@ -53,6 +54,12 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [audio, setAudio] = useState<AudioSettings>({ sfxEnabled: true, padEnabled: true, sfxVolume: 0.7, padVolume: 0.35 });
+  const [uploading, setUploading] = useState(false);
+  const [accentWord, setAccentWord] = useState("");
+  const [accentFont, setAccentFont] = useState<"Great Vibes" | "Instrument Serif italic">("Great Vibes");
+  const [accentColor, setAccentColor] = useState<"Lime" | "Cream" | "Blue">("Lime");
+  const [highlightWord, setHighlightWord] = useState("");
+  const [highlightColor, setHighlightColor] = useState<"Yellow" | "Lime" | "Blue">("Yellow");
 
   async function loadProjects() {
     const res = await fetch(`${API}/motion-projects`);
@@ -80,10 +87,85 @@ export default function App() {
   function deleteScene(index: number) { updateProject((current) => { if (current.scenes.length > 1) current.scenes.splice(index, 1); return current; }); setSceneIndex(Math.max(0, sceneIndex - (index <= sceneIndex ? 1 : 0))); setClipId(null); }
   function addClip(kind: string) {
     if (!selectedScene) return;
-    updateProject((current) => { const scene = current.scenes[sceneIndex]; const layer = scene.layers[0]; const newClip = clipDefaults(kind, layer.clips.length + 1); layer.clips.push(newClip); setClipId(newClip.id); return current; });
+    const mediaAsset = kind === "media.image" || kind === "media.video" ? projectAssets.find((asset) => asset.type === (kind === "media.image" ? "image" : "video")) : undefined;
+    if ((kind === "media.image" || kind === "media.video") && !mediaAsset) {
+      setError(`Upload ${kind === "media.image" ? "image" : "video"} terlebih dahulu sebelum menambah component ini.`);
+      return;
+    }
+    updateProject((current) => { const scene = current.scenes[sceneIndex]; const layer = scene.layers[0]; const newClip = clipDefaults(kind, layer.clips.length + 1); if (mediaAsset) newClip.props.asset = mediaAsset.id; layer.clips.push(newClip); setClipId(newClip.id); return current; });
   }
   function deleteClip(id: string) { updateProject((current) => { current.scenes[sceneIndex].layers.forEach((layer) => { layer.clips = layer.clips.filter((item) => item.id !== id); }); return current; }); setClipId(null); }
   function updatePropsJson(value: string) { if (!selectedClip) return; try { updateSelectedClip({ props: JSON.parse(value) }); setError(null); } catch { setError("Props harus JSON valid."); } }
+  const projectAssets = Object.entries(project.assets).map(([id, asset]: [string, any]) => ({ id, ...asset })) as Array<{ id: string; type: "image" | "video"; src: string; label: string }>;
+
+  async function uploadAsset(file: File) {
+    setUploading(true); setError(null); setStatus(null);
+    try {
+      const form = new FormData(); form.append("file", file);
+      const res = await fetch(`${API}/motion-assets`, { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload asset gagal");
+      const asset = data.asset;
+      updateProject((current) => ({ ...current, assets: { ...current.assets, [asset.id]: asset } }));
+      setStatus(`${asset.label || file.name} siap digunakan dalam template.`);
+    } catch (e: any) { setError(e.message); }
+    finally { setUploading(false); }
+  }
+
+  function applyTemplate(template: "footage" | "portrait" | "object") {
+    const asset = projectAssets.find((item) => item.type === "image" || item.type === "video");
+    if (!selectedScene) return;
+    if (!asset) { setError("Upload Footage / Image terlebih dahulu untuk menggunakan template editorial."); return; }
+    let selectedId = "";
+    updateProject((current) => {
+      const scene = current.scenes[sceneIndex]; const layer = scene.layers[0]; const n = layer.clips.length + 1;
+      const media: Clip = { id: `media-${template}-${n}`, kind: asset.type === "video" ? "media.video" : "media.image", at: 0, durationFrames: scene.durationFrames, props: { asset: asset.id, layout: { position: template === "portrait" ? [90, 82] : template === "object" ? [700, 90] : [0, 0], width: template === "portrait" ? 390 : template === "object" ? 500 : 1280, height: template === "portrait" ? 560 : template === "object" ? 540 : 720 }, fit: "cover", overlay: template === "footage" ? 0.48 : 0.16, radius: template === "portrait" ? 0 : 4 } };
+      const headline: Clip = { id: `headline-${template}-${n}`, kind: "typography.headline", at: 8, durationFrames: scene.durationFrames - 8, enter: { preset: "slideUp", durationFrames: 15 }, props: { text: template === "footage" ? "MAKE THE FRAME\nMATTER." : template === "portrait" ? "A QUIETER\nKIND OF BOLD." : "FORM FOLLOWS\nFEELING.", layout: { position: template === "portrait" ? [550, 190] : template === "object" ? [100, 190] : [92, 155] }, font: "display", fontSize: template === "portrait" ? 50 : 68, fontWeight: 800, color: "@colors.paper", maxWidth: template === "portrait" ? 580 : 720 } };
+      const accent: Clip = { id: `accent-${template}-${n}`, kind: "typography.headline", at: 22, durationFrames: scene.durationFrames - 22, enter: { preset: "slideUp", durationFrames: 15 }, props: { text: template === "footage" ? "beautifully" : template === "portrait" ? "unhurried" : "object", layout: { position: template === "portrait" ? [565, 340] : template === "object" ? [115, 380] : [108, 345] }, font: "script", fontStyle: "italic", fontSize: 72, color: template === "object" ? "@colors.paper" : "@colors.lime", editorialAccentFor: headline.id } };
+      layer.clips.push(media, headline, accent); selectedId = headline.id; return current;
+    });
+    setClipId(selectedId); setStatus("Editorial template added. Adjust its headline and accent in the inspector.");
+  }
+
+  function applyAccent() {
+    if (!selectedClip || selectedClip.kind !== "typography.headline") return;
+    if (!accentWord.trim()) { setError("Masukkan Accent word terlebih dahulu."); return; }
+    const colors = { Lime: "@colors.lime", Cream: "@colors.paper", Blue: "#78A6FF" };
+    let accentId = "";
+    updateProject((current) => {
+      const layer = current.scenes[sceneIndex].layers[0];
+      const existing = layer.clips.find((clip) => clip.kind === "typography.headline" && clip.props.editorialAccentFor === selectedClip.id);
+      const titleFontSize = Number(selectedClip.props.fontSize || 56);
+      const titleMaxWidth = Number(selectedClip.props.maxWidth || 900);
+      const charactersPerLine = Math.max(10, Math.floor(titleMaxWidth / (titleFontSize * 0.56)));
+      const estimatedLines = Math.max(1, Math.ceil(String(selectedClip.props.text || "").length / charactersPerLine));
+      const x = Number(selectedClip.props.layout?.position?.[0] || 90);
+      const y = Number(selectedClip.props.layout?.position?.[1] || 120) + titleFontSize * (estimatedLines * 0.94 + 0.24);
+      const { highlight: _highlight, ...headlineProps } = selectedClip.props;
+      const props = { text: accentWord.trim(), layout: { position: [x + 8, y] }, font: accentFont === "Great Vibes" ? "script" : "classic", fontStyle: "italic", fontSize: Math.min(82, Math.max(46, titleFontSize * 0.92)), color: colors[accentColor], editorialAccentFor: selectedClip.id };
+      const title = layer.clips.find((clip) => clip.id === selectedClip.id);
+      if (title) title.props = headlineProps;
+      if (existing) { existing.props = props; accentId = existing.id; } else { const created: Clip = { id: `accent-${safeId(selectedClip.id, "headline")}`, kind: "typography.headline", at: selectedClip.at + 8, durationFrames: Math.max(30, selectedClip.durationFrames - 8), enter: { preset: "slideUp", durationFrames: 15 }, props }; layer.clips.push(created); accentId = created.id; }
+      return current;
+    });
+    setClipId(accentId); setStatus("Script italic diterapkan. Marker highlight pada headline ini dihapus agar tidak bertabrakan.");
+  }
+
+  function applyHighlight() {
+    if (!selectedClip || !selectedClip.kind.startsWith("typography.")) return;
+    const word = highlightWord.trim();
+    if (!word) { setError("Masukkan satu kata yang ingin diberi stabilo."); return; }
+    if (!String(selectedClip.props.text || "").toLowerCase().includes(word.toLowerCase())) { setError("Kata stabilo harus ada di dalam Text component ini."); return; }
+    const colors = { Yellow: "#FDE047", Lime: "#A3E635", Blue: "#78A6FF" };
+    updateProject((current) => {
+      const layer = current.scenes[sceneIndex].layers[0];
+      layer.clips = layer.clips.filter((clip) => clip.props.editorialAccentFor !== selectedClip.id);
+      const title = layer.clips.find((clip) => clip.id === selectedClip.id);
+      if (title) title.props = { ...title.props, highlight: { word, color: colors[highlightColor] } };
+      return current;
+    });
+    setStatus("Marker highlight diterapkan. Script italic pada headline ini dihapus agar tidak bertabrakan.");
+  }
 
   async function makePlan() {
     setLoading(true); setError(null); setStatus(null);
@@ -113,7 +195,7 @@ export default function App() {
       <header className="motion-header"><div><input className="project-title" value={project.title} onChange={(e) => updateProject((p) => ({ ...p, title: e.target.value, id: safeId(e.target.value, p.id) }))} /><span>{project.format.width}×{project.format.height} · {project.format.fps}fps</span></div><button className="render-button" disabled={loading || !project.scenes.length} onClick={renderProject}>{loading ? "Rendering…" : "▶ Render MP4"}</button></header>
       {tab === "planner" ? <section className="planner-panel"><div className="planner-copy"><span>LOCAL STORY PLANNER</span><h1>Script → Visual Plan</h1><p>Planner memilih template Hook, Browser Demo, Workflow, Feature Grid, Comparison, dan Conclusion secara rule-based. Tidak memakai API atau model AI eksternal.</p></div><textarea value={script} onChange={(e) => setScript(e.target.value)} placeholder="Paste script video Anda di sini…" /><button className="planner-button" disabled={loading} onClick={makePlan}>✦ Buat Visual Plan</button><div className="planner-hint">Setelah jadi, Anda dapat review dan edit tiap Scene serta Component pada Scene Builder.</div></section> : <section className="builder-panel">
         <div className="scene-rail"><div className="section-head">SCENES <button onClick={addScene}>+ Add</button></div>{project.scenes.map((scene, index) => <div className={`scene-card ${index === sceneIndex ? "active" : ""}`} key={scene.id} onClick={() => { setSceneIndex(index); setClipId(null); }}><div><b>{String(index + 1).padStart(2, "0")}</b><strong>{scene.id.replace(/-/g, " ")}</strong><small>{(scene.durationFrames / FPS).toFixed(1)} sec · {scene.layers.flatMap((layer) => layer.clips).length} clips</small></div>{project.scenes.length > 1 && <button onClick={(e) => { e.stopPropagation(); deleteScene(index); }}>×</button>}</div>)}</div>
-        <div className="stage"><div className="stage-canvas"><div className="stage-label">{selectedScene ? selectedScene.id : "No scene"}</div>{selectedScene?.layers.flatMap((layer) => layer.clips).map((clip) => <button key={clip.id} className={`stage-clip ${clipId === clip.id ? "selected" : ""}`} style={{ left: `${Math.min(76, 8 + clip.at / selectedScene.durationFrames * 70)}%`, top: `${90 + (clip.props.layout?.position?.[1] || clip.props.position?.[1] || 0) / 720 * 360}px` }} onClick={() => setClipId(clip.id)}>{clip.kind}</button>)}</div>{videoUrl && <div className="render-preview"><video src={videoUrl} controls autoPlay loop /><a href={videoUrl} download>⬇ Download MP4</a></div>}</div>
+        <div className="stage"><div className="stage-canvas"><div className="stage-label">{selectedScene ? selectedScene.id : "No scene"}</div><div className="stage-preview" aria-hidden="true">{selectedScene?.layers.flatMap((layer) => layer.clips).filter((clip) => clip.kind === "media.image" || clip.kind === "media.video").map((clip) => { const asset = project.assets[clip.props.asset]; return asset?.src ? <div className="preview-media" key={`preview-${clip.id}`} style={{ left: `${(clip.props.layout?.position?.[0] || 0) / 1280 * 100}%`, top: `${(clip.props.layout?.position?.[1] || 0) / 720 * 100}%`, width: `${(clip.props.layout?.width || 1280) / 1280 * 100}%`, height: `${(clip.props.layout?.height || 720) / 720 * 100}%`, opacity: clip.props.opacity ?? 1 }}><img src={asset.src} alt="" /></div> : null; })}{selectedScene?.layers.flatMap((layer) => layer.clips).filter((clip) => clip.kind === "typography.headline").map((clip) => <div key={`type-${clip.id}`} className={`preview-type ${clip.props.font === "script" ? "script" : ""}`} style={{ left: `${(clip.props.layout?.position?.[0] || 90) / 1280 * 100}%`, top: `${(clip.props.layout?.position?.[1] || 120) / 720 * 100}%`, color: clip.props.color === "@colors.lime" ? "var(--lime)" : clip.props.color === "@colors.paper" ? "var(--cream)" : clip.props.color || "var(--cream)", fontSize: `${Math.min(9, Math.max(2.5, (clip.props.fontSize || 56) / 12))}vw`, maxWidth: `${(clip.props.maxWidth || 720) / 1280 * 100}%` }}>{clip.props.text}</div>)}</div>{selectedScene?.layers.flatMap((layer) => layer.clips).map((clip) => <button key={clip.id} className={`stage-clip ${clipId === clip.id ? "selected" : ""}`} style={{ left: `${Math.min(76, 8 + clip.at / selectedScene.durationFrames * 70)}%`, top: `${Math.min(82, 18 + (clip.props.layout?.position?.[1] || clip.props.position?.[1] || 0) / 720 * 58)}%` }} onClick={() => setClipId(clip.id)}>{clip.kind}</button>)}</div>{videoUrl && <div className="render-preview"><video src={videoUrl} controls autoPlay loop /><a href={videoUrl} download>⬇ Download MP4</a></div>}</div>
         <div className="timeline"><div className="timeline-title">TIMELINE · {selectedScene ? (selectedScene.durationFrames / FPS).toFixed(1) : 0}s</div>{selectedScene?.layers.flatMap((layer) => layer.clips).map((clip) => <button key={clip.id} className={`timeline-clip ${clipId === clip.id ? "selected" : ""}`} style={{ marginLeft: `${clip.at / selectedScene.durationFrames * 100}%`, width: `${Math.max(10, clip.durationFrames / selectedScene.durationFrames * 100)}%` }} onClick={() => setClipId(clip.id)}>{clip.kind}</button>)}</div>
       </section>}
       {status && <div className="motion-status success">✓ {status}</div>}{error && <div className="motion-status error">⚠ {error}</div>}
@@ -121,8 +203,9 @@ export default function App() {
 
     <aside className="motion-inspector">
       {tab === "builder" && <>
+        <section className="editorial-tools"><div className="tool-kicker">EDITORIAL TOOLS</div><label className="upload-control"><input type="file" accept="image/*,video/*" onChange={(e) => { const file = e.target.files?.[0]; if (file) uploadAsset(file); e.currentTarget.value = ""; }} disabled={uploading} /><span>{uploading ? "Uploading…" : "Upload Footage / Image"}</span></label>{projectAssets.length > 0 ? <div className="asset-strip">{projectAssets.slice(0, 2).map((asset) => <span key={asset.id}>{asset.type === "video" ? "VID" : "IMG"} · {asset.label}</span>)}</div> : <p className="asset-empty">Upload one local image or video to unlock templates.</p>}<div className="template-list"><button onClick={() => applyTemplate("footage")}><b>Footage + Script</b><small>Bold title + script word on footage</small></button><button onClick={() => applyTemplate("portrait")}><b>Portrait Sidecard</b><small>Vertical media with compact type</small></button><button onClick={() => applyTemplate("object")}><b>Object Editorial</b><small>Object image + editorial accent</small></button></div></section>
         <div className="inspector-head"><span>COMPONENTS</span><select defaultValue="" onChange={(e) => { if (e.target.value) addClip(e.target.value); e.currentTarget.value = ""; }}><option value="">+ Add component</option>{componentOptions.map(([id, label]) => <option value={id} key={id}>{label}</option>)}</select></div>
-        {!selectedClip ? <div className="empty-inspector">Pilih component di stage atau timeline.<br /><br />Gunakan <b>+ Add component</b> untuk menambah visual baru.</div> : <div className="clip-editor"><div className="clip-editor-title"><span>{selectedClip.kind}</span><button onClick={() => deleteClip(selectedClip.id)}>Delete</button></div><label>ID<input value={selectedClip.id} onChange={(e) => updateSelectedClip({ id: safeId(e.target.value, selectedClip.id) })} /></label><div className="form-row"><label>Start (frame)<input type="number" value={selectedClip.at} onChange={(e) => updateSelectedClip({ at: Number(e.target.value) })} /></label><label>Duration<input type="number" value={selectedClip.durationFrames} onChange={(e) => updateSelectedClip({ durationFrames: Number(e.target.value) })} /></label></div>{typeof selectedClip.props.text === "string" && <label>Text<input value={selectedClip.props.text} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, text: e.target.value } })} /></label>}{typeof selectedClip.props.title === "string" && <label>Title<input value={selectedClip.props.title} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, title: e.target.value } })} /></label>}{typeof selectedClip.props.value === "string" && <label>Value<input value={selectedClip.props.value} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, value: e.target.value } })} /></label>}<label>Props JSON<textarea key={selectedClip.id} className="props-json" defaultValue={JSON.stringify(selectedClip.props, null, 2)} onBlur={(e) => updatePropsJson(e.target.value)} /></label><small>Gunakan field cepat di atas. Props JSON untuk edit lanjutan.</small></div>}
+        {!selectedClip ? <div className="empty-inspector">Choose a component on the stage or timeline.<br /><br />Start with an <b>Editorial Tool</b>, or add a component below.</div> : <div className="clip-editor"><div className="clip-editor-title"><span>{selectedClip.kind}</span><button onClick={() => deleteClip(selectedClip.id)}>Delete</button></div><label>ID<input value={selectedClip.id} onChange={(e) => updateSelectedClip({ id: safeId(e.target.value, selectedClip.id) })} /></label><div className="form-row"><label>Start (frame)<input type="number" value={selectedClip.at} onChange={(e) => updateSelectedClip({ at: Number(e.target.value) })} /></label><label>Duration<input type="number" value={selectedClip.durationFrames} onChange={(e) => updateSelectedClip({ durationFrames: Number(e.target.value) })} /></label></div>{typeof selectedClip.props.text === "string" && <><label>Text<input value={selectedClip.props.text} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, text: e.target.value } })} /></label><section className="highlight-editor"><span>MARKER HIGHLIGHT</span><label>Highlight 1 kata<input value={highlightWord} onChange={(e) => setHighlightWord(e.target.value)} placeholder="misalnya: ditolak" /></label><div className="form-row"><label>Warna stabilo<select value={highlightColor} onChange={(e) => setHighlightColor(e.target.value as typeof highlightColor)}><option>Yellow</option><option>Lime</option><option>Blue</option></select></label></div><button className="apply-highlight" onClick={applyHighlight}>Gunakan Marker Saja</button></section></>}{selectedClip.kind === "typography.headline" && <section className="accent-editor"><span>ACCENT TYPOGRAPHY</span><label>Accent word <input value={accentWord} onChange={(e) => setAccentWord(e.target.value)} placeholder="e.g. beautifully" /></label><div className="form-row"><label>Script font<select value={accentFont} onChange={(e) => setAccentFont(e.target.value as typeof accentFont)}><option>Great Vibes</option><option>Instrument Serif italic</option></select></label><label>Accent color<select value={accentColor} onChange={(e) => setAccentColor(e.target.value as typeof accentColor)}><option>Lime</option><option>Cream</option><option>Blue</option></select></label></div><button className="apply-accent" onClick={applyAccent}>Gunakan Script Saja</button></section>}{typeof selectedClip.props.title === "string" && <label>Title<input value={selectedClip.props.title} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, title: e.target.value } })} /></label>}{typeof selectedClip.props.value === "string" && <label>Value<input value={selectedClip.props.value} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, value: e.target.value } })} /></label>}<details className="advanced-props"><summary>Advanced · Props JSON</summary><textarea key={selectedClip.id} className="props-json" defaultValue={JSON.stringify(selectedClip.props, null, 2)} onBlur={(e) => updatePropsJson(e.target.value)} /><small>Use quick fields for common edits. JSON is for advanced adjustments.</small></details></div>}
         <div className="audio-box"><span>AUDIO</span><label><input type="checkbox" checked={audio.sfxEnabled} onChange={(e) => setAudio({ ...audio, sfxEnabled: e.target.checked })} /> SFX</label><label><input type="checkbox" checked={audio.padEnabled} onChange={(e) => setAudio({ ...audio, padEnabled: e.target.checked })} /> Ambient pad</label></div>
       </>}
     </aside>

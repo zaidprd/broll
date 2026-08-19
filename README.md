@@ -109,6 +109,22 @@ Component inti yang tersedia:
 
 Gunakan field cepat seperti **Text**, **Title**, dan **Value** untuk kebutuhan umum. `Props JSON` hanya untuk pengaturan lanjutan; nilainya harus JSON valid.
 
+### Editorial Tools: footage dan script italic
+
+Di panel kanan terdapat **EDITORIAL TOOLS** untuk membuat visual B-roll lebih profesional tanpa JSON:
+
+1. Pilih scene yang ingin diubah.
+2. Klik **Upload Footage / Image** dan pilih gambar (`PNG`, `JPG`, `WEBP`, `GIF`) atau video (`MP4`, `WEBM`, `MOV`) lokal, maksimum 250 MB.
+3. Pilih salah satu template:
+   - **Footage + Script** — footage penuh dengan judul bold dan satu kata script.
+   - **Portrait Sidecard** — footage/gambar vertikal di samping typography.
+   - **Object Editorial** — gambar/objek besar dengan script accent.
+4. Klik component judul `typography.headline` di Stage.
+5. Pada **Accent Typography**, isi kata yang ingin ditekankan, pilih **Great Vibes** atau **Instrument Serif italic**, lalu pilih warna accent dan klik **Apply Accent**.
+6. Klik **Render MP4**.
+
+Gunakan maksimal satu kata script sebagai accent dalam satu scene agar tetap premium dan mudah dibaca. File upload disimpan lokal di `public/uploads/`.
+
 ---
 
 ## Render demo Motion Engine

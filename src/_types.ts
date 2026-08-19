@@ -29,7 +29,7 @@ export type ElementConfig = {
   // SFX control: "auto" uses default mapper, specific type overrides, "silent" = no SFX, "custom" = use sfxFile
   sfx?: "auto" | "whoosh" | "impact" | "tick" | "riser" | "click" | "silent" | "custom";
   sfxFile?: string; // Path to custom file (relative to public/sfx-custom/) — used when sfx="custom"
-  sfxStart?: number; // Optional start offset in seconds (for trimming custom SFX)
+  sfxOffset?: number; // Timeline offset in seconds relative to this element's delay (can be negative)
 };
 
 export type AudioConfig = {

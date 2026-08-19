@@ -93,6 +93,14 @@ Klik **+ Add** di sidebar Lines.
 **Q: Cara hapus element?**
 Klik tombol ✕ merah di header element.
 
+**Q: Bagaimana upload sound effect sendiri?**
+Pilih element, pilih SFX = `custom`, lalu klik tombol **Upload audio**.
+Format: WAV, MP3, OGG, M4A, atau FLAC. Maksimum 25 MB.
+
+**Q: Bagaimana menentukan posisi suara?**
+Gunakan field **SFX offset (s)** pada element. Nilai `-0.15` berarti suara
+muncul 0,15 detik sebelum text masuk. Nilai `0.20` berarti 0,20 detik sesudahnya.
+
 **Q: Bisa custom posisi lebih presisi?**
 Edit angka X/Y langsung di field position. Drag-di-preview belum tersedia.
 

@@ -103,9 +103,11 @@ Edit `src/fonts.ts` dan `api/server.mjs`. Lihat instruksi di file.
 
 Default SFX otomatis sync ke animasi. Kalau mau custom:
 
-1. Taruh file audio (`.wav`, `.mp3`, `.ogg`) di `public/sfx-custom/`
-2. Refresh UI
-3. Pilih element → SFX dropdown → **custom** → pilih file
+1. Pilih element → SFX dropdown → **custom**
+2. Klik **Upload audio**
+3. Pilih file `.wav`, `.mp3`, `.ogg`, `.m4a`, atau `.flac` (maks. 25 MB)
+4. File otomatis terpilih untuk element tersebut
+5. Atur **SFX offset** bila suara perlu maju/mundur dari timing teks
 
 Tipe SFX yang tersedia:
 
@@ -116,7 +118,10 @@ Tipe SFX yang tersedia:
 - `riser` — buildup naik (bagus untuk hero)
 - `click` — click pendek
 - `silent` — tidak ada SFX
-- `custom` — file sendiri
+- `custom` — upload file sendiri dari UI
+
+**SFX offset**: posisi suara relatif terhadap teks masuk. `-0.15` berarti suara
+mulai 0,15 detik sebelum teks; `0.20` berarti mulai 0,20 detik sesudah teks.
 
 ---
 

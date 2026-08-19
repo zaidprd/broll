@@ -22,7 +22,7 @@ if %ERRORLEVEL% EQU 0 (
   echo API sudah jalan di port 3001.
 ) else (
   echo Starting API server...
-  start "Broll API" /MIN cmd /k "cd /d "%ROOT%\api" && node server.mjs"
+  start "Broll API" /MIN cmd /k "pushd ""%ROOT%\api"" ^&^& node server.mjs"
   timeout /t 3 /nobreak >nul
 )
 
@@ -31,7 +31,7 @@ if %ERRORLEVEL% EQU 0 (
   echo Web UI sudah jalan di port 5173.
 ) else (
   echo Starting Web UI...
-  start "Broll Web" /MIN cmd /k "cd /d "%ROOT%\web" && npm run dev"
+  start "Broll Web" /MIN cmd /k "pushd ""%ROOT%\web"" ^&^& npm run dev"
   timeout /t 5 /nobreak >nul
 )
 

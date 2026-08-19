@@ -20,7 +20,7 @@ type PresetElement = {
   rotation?: number;
   sfx?: string;
   sfxFile?: string;
-  sfxStart?: number;
+  sfxOffset?: number;
 };
 type Preset = {
   id: string;
@@ -39,7 +39,7 @@ type LineState = {
   rotation: number;
   sfx: string;
   sfxFile: string;
-  sfxStart: number;
+  sfxOffset: number;
 };
 
 // Sample font stack for swatch preview
@@ -61,6 +61,7 @@ export default function App() {
   const [anims, setAnims] = useState<AnimOpt[]>([]);
   const [sfxOptions, setSfxOptions] = useState<SfxOpt[]>([]);
   const [customSfxFiles, setCustomSfxFiles] = useState<CustomSfxFile[]>([]);
+  const [uploadingSfx, setUploadingSfx] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [name, setName] = useState<string>("broll");
   const [lines, setLines] = useState<LineState[]>([]);
@@ -100,6 +101,35 @@ export default function App() {
     });
   }, []);
 
+  async function refreshCustomSfx() {
+    const response = await fetch(`${API}/custom-sfx`);
+    const data = await response.json();
+    setCustomSfxFiles(data.files || []);
+    return data.files || [];
+  }
+
+  async function uploadCustomSfx(file: File, lineIndex: number) {
+    setUploadingSfx(true);
+    setError(null);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const response = await fetch(`${API}/custom-sfx`, {
+        method: "POST",
+        body,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Upload SFX gagal");
+      await refreshCustomSfx();
+      updateLine(lineIndex, { sfx: "custom", sfxFile: data.file.name });
+      setSuccess(`SFX ${file.name} berhasil diupload.`);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setUploadingSfx(false);
+    }
+  }
+
   function selectPreset(p: Preset) {
     setSelectedStyle(p.id);
     setLines(
@@ -113,7 +143,7 @@ export default function App() {
         rotation: el.rotation ?? 0,
         sfx: el.sfx ?? "auto",
         sfxFile: el.sfxFile ?? "",
-        sfxStart: el.sfxStart ?? 0,
+        sfxOffset: el.sfxOffset ?? 0,
       }))
     );
     setVideoUrl(null);
@@ -159,7 +189,7 @@ export default function App() {
         rotation: 0,
         sfx: "auto",
         sfxFile: "",
-        sfxStart: 0,
+        sfxOffset: 0,
       },
     ]);
   }
@@ -188,7 +218,7 @@ export default function App() {
             rotation: l.rotation,
             sfx: l.sfx,
             sfxFile: l.sfxFile,
-            sfxStart: l.sfxStart,
+            sfxOffset: l.sfxOffset,
           })),
           audio: {
             sfxEnabled,
@@ -572,10 +602,30 @@ export default function App() {
                     </div>
                   </div>
 
+                  {line.sfx !== "silent" && (
+                    <div className="line-field">
+                      <label>SFX offset (s)</label>
+                      <input
+                        type="number"
+                        value={line.sfxOffset}
+                        step="0.05"
+                        min="-3"
+                        max="3"
+                        onChange={(e) =>
+                          updateLine(idx, {
+                            sfxOffset: Number(e.target.value),
+                          })
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        title="Posisi suara relatif terhadap teks. Negatif = suara lebih awal."
+                      />
+                    </div>
+                  )}
+
                   {line.sfx === "custom" && (
                     <div className="line-field span2">
                       <label>Custom SFX file</label>
-                      {customSfxFiles.length > 0 ? (
+                      <div className="custom-sfx-controls">
                         <select
                           value={line.sfxFile}
                           onChange={(e) =>
@@ -590,32 +640,25 @@ export default function App() {
                             </option>
                           ))}
                         </select>
-                      ) : (
-                        <div className="hint">
-                          Taruh file audio di <code>public/sfx-custom/</code>,
-                          kemudian refresh halaman.
-                          <br />
-                          Format: .wav, .mp3, .ogg, .m4a
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {line.sfx === "custom" && line.sfxFile && (
-                    <div className="line-field">
-                      <label>Start offset (s)</label>
-                      <input
-                        type="number"
-                        value={line.sfxStart}
-                        step="0.1"
-                        min="0"
-                        onChange={(e) =>
-                          updateLine(idx, {
-                            sfxStart: Number(e.target.value),
-                          })
-                        }
-                        onClick={(e) => e.stopPropagation()}
-                      />
+                        <label className="upload-btn">
+                          {uploadingSfx ? "Uploading..." : "↑ Upload audio"}
+                          <input
+                            type="file"
+                            accept="audio/wav,audio/mpeg,audio/ogg,audio/mp4,audio/flac,.wav,.mp3,.ogg,.m4a,.flac"
+                            disabled={uploadingSfx}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) uploadCustomSfx(file, idx);
+                              e.currentTarget.value = "";
+                            }}
+                          />
+                        </label>
+                      </div>
+                      <div className="hint">
+                        Upload WAV, MP3, OGG, M4A, atau FLAC. Maksimum 25 MB.
+                        Offset negatif memulai suara sebelum teks masuk.
+                      </div>
                     </div>
                   )}
                 </div>

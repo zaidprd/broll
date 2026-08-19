@@ -9,13 +9,15 @@
 // Tidak ada file audio eksternal, tidak ada API key.
 // Per-element SFX override via element.sfx field:
 //   "auto" | "whoosh" | "impact" | "tick" | "riser" | "click" | "silent" | "custom"
-// Custom SFX: taruh file di public/sfx-custom/<name>.wav, set sfx="custom" + sfxFile="<name>.wav"
+// Custom SFX: upload file melalui UI, atau taruh di public/sfx-custom/<name>.wav.
+// sfxOffset: posisi suara relatif terhadap masuknya element (detik; boleh negatif).
 // ============================================================
 
 import React from "react";
 import {
   AbsoluteFill,
   Audio,
+  Sequence,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
@@ -62,7 +64,7 @@ const Txt: React.FC<
   rotation = 0,
   sfx,
   sfxFile,
-  sfxStart = 0,
+  sfxOffset = 0,
   sfxEnabled,
   sfxVolume,
 }) => {
@@ -105,30 +107,27 @@ const Txt: React.FC<
   const sfxType = resolved === "custom" ? null : resolved;
   const customFile = resolved === "custom" && sfxFile ? sfxFile : null;
 
-  // Audio element time bounds
-  const audioStartFrame = Math.round((delay + sfxStart) * fps);
-  // For procedural SFX, end at delay + 0.8s. For custom, end at video duration.
-  const audioEndFrame = customFile
-    ? fps * DURATION
-    : Math.round((delay + sfxStart + 0.8) * fps);
+  // Sequence menentukan posisi audio di timeline video.
+  // startFrom pada <Audio> adalah trim source audio, bukan waktu munculnya audio.
+  const audioFrom = Math.max(0, Math.round((delay + sfxOffset) * fps));
+  const proceduralDuration = Math.round(0.8 * fps);
+  const customDuration = Math.max(1, fps * DURATION - audioFrom);
 
   return (
     <>
       {sfxType && (
-        <Audio
-          src={SFX_URLS[sfxType]}
-          startFrom={audioStartFrame}
-          endAt={audioEndFrame}
-          volume={sfxVolume}
-        />
+        <Sequence from={audioFrom} durationInFrames={proceduralDuration}>
+          <Audio
+            src={SFX_URLS[sfxType]}
+            endAt={proceduralDuration}
+            volume={sfxVolume}
+          />
+        </Sequence>
       )}
       {customFile && (
-        <Audio
-          src={staticFile(`sfx-custom/${customFile}`)}
-          startFrom={audioStartFrame}
-          endAt={audioEndFrame}
-          volume={sfxVolume}
-        />
+        <Sequence from={audioFrom} durationInFrames={customDuration}>
+          <Audio src={staticFile(`sfx-custom/${customFile}`)} volume={sfxVolume} />
+        </Sequence>
       )}
       <div
         style={{

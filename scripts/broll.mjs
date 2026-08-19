@@ -63,7 +63,7 @@ const outputArg = getArg("--output") || "out/broll.mp4";
 const textOverrides = getAllArgs("--text"); // ["3:stop", "4:chasing"]
 const fontOverrides = getAllArgs("--font"); // ["3:classic"]
 const animOverrides = getAllArgs("--anim"); // ["4:scaleIn"]
-const setFlags = args.filter(a => a.startsWith("--set")); // ["--set", "3.text=stop", ...]
+const setFlags = getAllArgs("--set"); // ["3.text=stop", "4.font=classic"]
 
 // ─── --list preset ───
 if (args.includes("--list")) {
@@ -98,7 +98,7 @@ function applyOverride(idx, key, value) {
     return;
   }
   // cast types
-  if (["x", "y", "fontSize", "fontWeight", "delay", "duration"].includes(key)) {
+  if (["x", "y", "fontSize", "fontWeight", "delay", "duration", "sfxOffset"].includes(key)) {
     value = Number(value);
   } else if (key === "rotation") {
     value = Number(value);
@@ -131,6 +131,10 @@ for (const a of animOverrides) {
 for (const flag of setFlags) {
   // format: --set 3.text="stop"
   const eq = flag.indexOf("=");
+  if (eq < 1) {
+    console.error(`⚠️  Format --set tidak valid: ${flag}`);
+    continue;
+  }
   const path = flag.substring(0, eq);
   let value = flag.substring(eq + 1);
   // strip quotes

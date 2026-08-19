@@ -560,6 +560,38 @@ select {
   color: var(--accent);
 }
 
+.custom-sfx-controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  color: var(--accent) !important;
+  cursor: pointer;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  white-space: nowrap;
+}
+
+.upload-btn:hover {
+  border-color: var(--accent);
+  background: rgba(163, 230, 53, 0.08);
+}
+
+.upload-btn input {
+  display: none;
+}
+
 /* ─── Buttons ─── */
 .btn {
   width: 100%;

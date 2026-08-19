@@ -2,7 +2,7 @@
   "name": "broll",
   "version": "0.1.0",
   "private": true,
-  "description": "Generator B-roll Remotion otomatis via LLM. Gaya Iman Gadzhi.",
+  "description": "Generator B-roll kinetic typography lokal berbasis Remotion.",
   "scripts": {
     "b-roll": "node scripts/broll.mjs",
     "b-roll:list": "node scripts/broll.mjs --list",
@@ -11,23 +11,19 @@
     "b-roll:mono": "node scripts/broll.mjs --preset mono-bold",
     "studio": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts Broll out/video.mp4",
-    "test-llm": "node scripts/test-llm.mjs",
     "ui:api": "node api/server.mjs",
     "ui:web": "cd web && npm run dev",
-    "ui": "concurrently -n API,WEB -c yellow,green \"npm run ui:api\" \"npm run ui:web\""
+    "ui": "concurrently -n API,WEB -c yellow,green \"npm run ui:api\" \"npm run ui:web\"",
+    "build": "npm run typecheck && npm run web:build",
+    "typecheck": "tsc --noEmit",
+    "web:build": "npm --prefix web run build"
   },
   "dependencies": {
-    "@fontsource/great-vibes": "^5.3.0",
-    "@fontsource/instrument-serif": "^5.3.0",
-    "@fontsource/inter": "^5.3.0",
-    "@fontsource/jetbrains-mono": "^5.3.0",
-    "@fontsource/playfair-display": "^5.3.0",
-    "@fontsource/plus-jakarta-sans": "^5.3.0",
-    "@remotion/cli": "^4.0.242",
+    "@remotion/cli": "^4.0.509",
     "@remotion/google-fonts": "^4.0.509",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "remotion": "^4.0.242"
+    "remotion": "^4.0.509"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",

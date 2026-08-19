@@ -1,0 +1,80 @@
+// src/engine/ComponentRegistry.ts
+// Phase 2 allow-list and component payload validation.
+
+import { z } from "zod";
+
+const position = z.tuple([z.number(), z.number()]);
+const layout = z.object({ position, width: z.number().positive().optional(), height: z.number().positive().optional() });
+const enter = z.object({ preset: z.enum(["fade", "slideUp", "slideLeft", "slideRight", "scaleIn", "wordPop", "reveal"]), durationFrames: z.number().int().positive() }).optional();
+const sfx = z.enum(["auto", "whoosh", "impact", "tick", "riser", "click", "silent", "custom"]).optional();
+
+const typographyPropsSchema = z.object({
+  text: z.string(), layout: z.object({ position }),
+  font: z.enum(["display", "displayItalic", "sans", "classic", "mono", "script", "playfair"]),
+  fontStyle: z.enum(["normal", "italic"]).optional(), fontWeight: z.number().int().min(100).max(1000).optional(),
+  fontSize: z.number().positive().max(600), letterSpacing: z.number().min(-1).max(1).optional(),
+  rotation: z.number().min(-20).max(20).optional(), opacity: z.number().min(0).max(1).optional(),
+  sfx, sfxFile: z.string().min(1).optional(), sfxOffset: z.number().min(-3).max(3).optional(),
+});
+
+const browserProps = z.object({ title: z.string(), subtitle: z.string().optional(), layout, sections: z.array(z.object({ label: z.string(), value: z.string(), active: z.boolean().optional() })).optional() });
+const notificationProps = z.object({ title: z.string(), body: z.string().optional(), tone: z.enum(["success", "warning", "info"]).optional(), layout });
+const appGridProps = z.object({ title: z.string().optional(), layout, items: z.array(z.object({ icon: z.string().optional(), label: z.string(), accent: z.boolean().optional() })).min(1) });
+const checklistProps = z.object({ title: z.string().optional(), layout, items: z.array(z.string()).min(1) });
+const progressProps = z.object({ label: z.string(), value: z.number().min(0).max(100), accent: z.string().optional(), layout });
+const terminalProps = z.object({ lines: z.array(z.string()).min(1), layout });
+const cursorProps = z.object({ position, click: z.boolean().optional() });
+const workflowProps = z.object({ position, width: z.number().positive().optional(), title: z.string().optional(), nodes: z.array(z.object({ id: z.string(), label: z.string(), icon: z.string().optional(), tone: z.string().optional() })).min(2) });
+const bigNumberProps = z.object({ position, value: z.string(), label: z.string().optional(), accent: z.string().optional() });
+const comparisonProps = z.object({ position, width: z.number().positive().optional(), left: z.object({ label: z.string(), value: z.string() }), right: z.object({ label: z.string(), value: z.string() }) });
+const barChartProps = z.object({ position, width: z.number().positive().optional(), height: z.number().positive().optional(), title: z.string().optional(), items: z.array(z.object({ label: z.string(), value: z.number(), accent: z.boolean().optional() })).min(1) });
+const counterProps = z.object({ position, from: z.number().optional(), to: z.number(), prefix: z.string().optional(), suffix: z.string().optional(), label: z.string().optional() });
+const calloutProps = z.object({ position, text: z.string(), side: z.enum(["left", "right", "top", "bottom"]).optional(), tone: z.string().optional() });
+const spotlightProps = z.object({ rect: z.tuple([z.number(), z.number(), z.number().positive(), z.number().positive()]), dimOpacity: z.number().min(0).max(1).optional() });
+const deviceProps = z.object({ position, width: z.number().positive().optional(), height: z.number().positive().optional(), title: z.string().optional(), frame: z.enum(["phone", "browser"]).optional() });
+const iconProps = z.object({ position, name: z.string(), size: z.number().positive().optional(), color: z.string().optional() });
+const audioClipProps = z.object({ asset: z.string().min(1), volume: z.number().min(0).max(1).optional() });
+
+const schemas = {
+  "typography.headline": typographyPropsSchema,
+  "typography.body": typographyPropsSchema,
+  "typography.label": typographyPropsSchema,
+  "ui.browser": browserProps,
+  "ui.notification": notificationProps,
+  "ui.appGrid": appGridProps,
+  "ui.checklist": checklistProps,
+  "ui.progress": progressProps,
+  "ui.terminal": terminalProps,
+  "ui.cursor": cursorProps,
+  "workflow.flow": workflowProps,
+  "chart.metric": bigNumberProps,
+  "chart.comparison": comparisonProps,
+  "chart.bar": barChartProps,
+  "chart.counter": counterProps,
+  "callout.pointer": calloutProps,
+  "effect.spotlight": spotlightProps,
+  "device.frame": deviceProps,
+  icon: iconProps,
+  "audio.clip": audioClipProps,
+} as const;
+
+export type ComponentKind = keyof typeof schemas;
+export const COMPONENT_KINDS = Object.keys(schemas) as ComponentKind[];
+
+export function isRegisteredComponentKind(kind: string): kind is ComponentKind {
+  return kind in schemas;
+}
+
+export function validateComponentProps(kind: string, props: unknown): string[] {
+  if (!isRegisteredComponentKind(kind)) return [`Component kind belum terdaftar: ${kind}`];
+  const result = schemas[kind].safeParse(props);
+  if (result.success) return [];
+  return result.error.issues.map((issue) => `${issue.path.join(".") || "props"}: ${issue.message}`);
+}
+
+export const COMPONENT_FAMILIES = {
+  typography: ["typography.headline", "typography.body", "typography.label"],
+  ui: ["ui.browser", "ui.notification", "ui.appGrid", "ui.checklist", "ui.progress", "ui.terminal", "ui.cursor"],
+  workflow: ["workflow.flow"], charts: ["chart.metric", "chart.comparison", "chart.bar", "chart.counter"],
+  callouts: ["callout.pointer"], effects: ["effect.spotlight"], devices: ["device.frame"], icons: ["icon"], audio: ["audio.clip"],
+} as const;

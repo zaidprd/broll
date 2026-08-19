@@ -1,139 +1,199 @@
-# Broll Studio — Panduan Pemakaian
+# Panduan Pemula — ZAID PRD Motion Engine
 
-Aplikasi untuk generate video B-roll **editorial kinetic typography** (≤6 detik).
-Cocok untuk konten YouTube, Reels, TikTok, Shorts.
+Panduan ini untuk menjalankan dan memakai Motion Engine tanpa perlu menulis kode.
 
-## Apa ini?
+Motion Engine membuat video MP4 lokal dari beberapa scene. Anda dapat memulai dari script, lalu mengubah visualnya melalui Scene Builder.
 
-Broll Studio bikin video pendek dengan typography besar + animasi, style mirip
-video Iman Gadzhi / Alex Hormozi. Anda tinggal:
+## 1. Yang diperlukan
 
-1. Pilih style preset
-2. Edit text per element
-3. Klik Generate
-4. Download MP4
-
-Tidak perlu skill coding atau desain.
-
-## Sistem yang dibutuhkan
-
-- **Node.js** versi 18+ ([download](https://nodejs.org))
-- **Windows 10/11**, macOS, atau Linux
-- Koneksi internet (hanya untuk render pertama kali)
+- Komputer Windows 10/11, macOS, atau Linux
+- Node.js versi 18+: https://nodejs.org
 - RAM minimum 4 GB
+- Koneksi internet pada render pertama jika font perlu di-cache
 
-## Cara install (5 menit)
+## 2. Instalasi
+
+### Jika Anda baru download atau clone project
+
+1. Buka folder project `broll`.
+2. Di Windows, klik dua kali `setup.bat`.
+3. Tunggu proses selesai. Jangan tutup jendelanya sebelum muncul pesan selesai.
+
+Alternatif lewat terminal:
+
+```bash
+npm install
+npm --prefix web install
+```
+
+## 3. Menjalankan aplikasi
 
 ### Windows
 
-1. Buka folder `broll` di File Explorer
-2. Klik dua kali `setup.bat`
-3. Tunggu sampai selesai (download ~280 MB dependencies)
-4. Selesai — folder siap dipakai
+Klik dua kali `start.bat`.
 
-### macOS / Linux
+### macOS / Linux / terminal
+
+Di folder project, jalankan:
 
 ```bash
-cd broll
-chmod +x setup.sh
-./setup.sh
+npm run ui
 ```
 
-## Cara pakai
+Lalu buka:
 
-1. Klik dua kali `start.bat` (Windows) atau `./start.sh` (Mac/Linux)
-2. Browser otomatis terbuka ke http://localhost:5173
-3. Pilih style preset di sidebar kanan
-4. Edit text, font, animasi per element
-5. Klik **Generate MP4**
-6. Tunggu 10-20 detik
-7. Video muncul di preview — klik **Download MP4**
+```text
+http://localhost:5173
+```
 
-## Style preset
+Jika browser tidak terbuka otomatis, salin alamat di atas ke Chrome/Edge.
 
-| Nama | Hero font | Cocok untuk |
-|---|---|---|
-| **script-hero** | Great Vibes (calligraphy) | Hero kata pendek (find, stop, love) |
-| **serif-italic** | Instrument Serif italic | Teks hero medium (premium) |
-| **mono-bold** | JetBrains Mono bold | Tech / SaaS / AI |
+## 4. Membuat video dari script
 
-## Field yang bisa diedit
+1. Di menu kiri, pilih **Script Planner**.
+2. Paste naskah video Anda ke kotak script.
+3. Klik **Buat Visual Plan**.
+4. Aplikasi membuat beberapa scene otomatis.
+5. Anda akan dibawa ke **Scene Builder**.
+6. Review setiap scene. Klik scene di kolom kiri untuk berpindah.
+7. Jika sudah sesuai, klik **Render MP4** di kanan atas.
+8. Tunggu render. Video akan muncul di bawah Stage. Klik **Download MP4** untuk menyimpan file.
 
-Per element, Anda bisa ubah:
+Contoh script singkat:
 
-| Field | Fungsi |
+```text
+Kebanyakan orang hanya memakai sedikit fitur ChatGPT. Buka Settings dan aktifkan Custom Instructions. Setelah itu, buat workflow yang menyimpan konteks Anda. Hasilnya, pekerjaan berulang bisa selesai lebih cepat.
+```
+
+### Planner memakai AI atau API?
+
+Belum. Planner saat ini **berjalan lokal** memakai template dan aturan pemilihan scene. Script Anda tidak dikirim ke GPT atau API eksternal. Hasilnya dapat Anda edit sebelum dirender.
+
+## 5. Memahami Scene Builder
+
+### Kolom kiri: Scene
+
+Setiap kotak adalah satu bagian video, contohnya Hook, Demo, atau Conclusion.
+
+- Klik scene untuk membukanya.
+- Klik **+ Add** untuk menambah scene kosong.
+- Klik `×` pada scene untuk menghapusnya. Project harus memiliki minimal satu scene.
+
+### Tengah: Stage dan Timeline
+
+- **Stage** menunjukkan posisi structural component di dalam scene.
+- Klik label component pada Stage untuk memilihnya.
+- **Timeline** menunjukkan kapan component muncul.
+- Klik component pada Timeline untuk memilih dan mengeditnya.
+
+Stage bukan preview animasi penuh. Hasil visual dan animasi yang akurat dapat dilihat setelah **Render MP4** selesai.
+
+### Kolom kanan: Component dan Inspector
+
+1. Klik dropdown **+ Add component**.
+2. Pilih visual yang ingin ditambahkan.
+3. Component baru akan muncul di scene aktif.
+4. Klik component tersebut untuk membuka pengaturan.
+
+Pengaturan dasar:
+
+| Pengaturan | Fungsi |
 |---|---|
-| Text | Kata yang muncul |
-| Font | 7 pilihan font (display, sans, classic, mono, script, playfair) |
-| Animation | 7 animasi (fade, slideUp, slideLeft, slideRight, scaleIn, wordPop, reveal) |
-| Size | Ukuran font (12-400 px) |
-| Position | Koordinat X, Y (0-1280, 0-720) |
-| Rotate | Kemiringan editorial (-10° sampai +10°) |
+| ID | Nama internal component. Biarkan default jika tidak perlu. |
+| Start (frame) | Kapan component mulai. Video 30 fps: 30 frame = 1 detik. |
+| Duration | Berapa lama component terlihat. |
+| Text | Isi tulisan pada typography. |
+| Title | Judul pada component seperti Browser atau Notification. |
+| Value | Nilai pada Big Number atau component angka. |
 
-## Audio / SFX
+`Props JSON` adalah pengaturan lanjutan. Jika Anda tidak nyaman dengan JSON, gunakan field dasar saja.
 
-Tombol toggle di sidebar, kiri bawah:
+## 6. Component yang tersedia
 
-- **SFX per element** — efek suara sync ke animasi (whoosh, impact, tick)
-- **Background pad** — drone ambient subtle sepanjang video
+| Kelompok | Contoh | Kegunaan |
+|---|---|---|
+| Typography | Kinetic Title, Body Text, Mono Label | Hook, judul, dan penekanan kata |
+| Chart | Big Number, Comparison, Bar Chart, Counter | Data, statistik, perbandingan |
+| UI | Browser Window, App Grid, Notification, Checklist, Progress, Terminal, Cursor | Tutorial aplikasi dan produk |
+| Workflow | Workflow Flow | Menjelaskan proses langkah demi langkah |
+| Callout / Effects | Callout, Spotlight | Menunjukkan bagian penting pada layar |
+| Device / Icon | Device Frame, Icon | Konteks mobile, aplikasi, atau brand |
 
-Slider volume untuk masing-masing.
+Gunakan sedikit component dengan pesan jelas. Satu scene yang kuat biasanya lebih baik daripada semua component dipakai sekaligus.
 
-## FAQ
+## 7. Mengatur audio
 
-**Q: Browser tidak auto-terbuka?**
-Buka manual http://localhost:5173
+Di bagian **AUDIO** pada inspector:
 
-**Q: Klik Generate tidak jalan?**
-Pastikan API server jalan. Buka window kedua dengan `start.bat` lagi.
+- Aktifkan/nonaktifkan **SFX** untuk efek suara bawaan.
+- Aktifkan/nonaktifkan **Ambient pad** untuk suasana audio lembut.
 
-**Q: Bisa tambah elemen baru?**
-Klik **+ Add** di sidebar Lines.
+Untuk preset Broll lama, Anda juga bisa memilih SFX per elemen dan upload audio sendiri:
 
-**Q: Cara hapus element?**
-Klik tombol ✕ merah di header element.
+1. Pilih SFX `custom`.
+2. Upload WAV, MP3, OGG, M4A, atau FLAC (maksimal 25 MB).
+3. Atur **SFX offset** sesuai waktu munculnya teks.
 
-**Q: Bagaimana upload sound effect sendiri?**
-Pilih element, pilih SFX = `custom`, lalu klik tombol **Upload audio**.
-Format: WAV, MP3, OGG, M4A, atau FLAC. Maksimum 25 MB.
+Contoh offset:
 
-**Q: Bagaimana menentukan posisi suara?**
-Gunakan field **SFX offset (s)** pada element. Nilai `-0.15` berarti suara
-muncul 0,15 detik sebelum text masuk. Nilai `0.20` berarti 0,20 detik sesudahnya.
+| Offset | Arti |
+|---:|---|
+| `-0.15` | Suara mulai 0,15 detik sebelum elemen masuk |
+| `0` | Suara mulai bersamaan dengan elemen |
+| `0.20` | Suara mulai 0,20 detik setelah elemen masuk |
 
-**Q: Bisa custom posisi lebih presisi?**
-Edit angka X/Y langsung di field position. Drag-di-preview belum tersedia.
+## 8. Menjalankan demo bawaan
 
-**Q: Render gagal / error?**
-Cek console browser (F12) untuk detail error. Atau jalankan ulang `start.bat`.
+Untuk memastikan renderer bekerja tanpa membuka UI, jalankan di terminal:
 
-**Q: Output MP4 di mana?**
-Di folder `out/` di root project. Otomatis named sesuai field "Output filename".
-
-## Struktur folder
-
-```
-broll/
-├── src/              # engine Remotion (jangan edit)
-├── presets/          # layout preset (boleh diedit langsung)
-├── api/              # backend Node
-├── web/              # UI Vite + React
-├── out/              # hasil video MP4
-├── scripts/          # CLI tools
-├── start.bat         # DOUBLE-CLICK untuk start
-├── setup.bat         # DOUBLE-CLICK untuk install
-└── stop.bat          # DOUBLE-CLICK untuk stop semua
+```bash
+npm run b-roll:motion
 ```
 
-## Tips
+Video contoh dibuat di:
 
-- **Preserve tanpa render ulang**: klik preset sama lagi untuk reset text
-- **Multiple variation**: ubah text + Generate lagi → file baru
-- **Backup preset favorit**: copy file `presets/*.json` ke folder lain
-- **Edit preset manual**: buka `presets/script-hero.json` di text editor,
-  ubah array `elements`, save. Lalu klik preset di UI untuk reload.
+```text
+out/motion-engine-v2-demo.mp4
+```
 
-## Lisensi
+## 9. Preset Broll lama
 
-Project ini untuk pemakaian pribadi. Font Google Fonts mengikuti lisensi
-masing-masing (semua open source).
+Fitur typography lama masih didukung. Perintah berikut membuat contoh video pendek:
+
+```bash
+npm run b-roll:script
+npm run b-roll:serif
+npm run b-roll:mono
+```
+
+Preset lama ada di folder `presets/` dan masih dapat dipakai sebagai compatibility workflow.
+
+## 10. Lokasi hasil video
+
+- Setelah render dari UI, klik tombol download di bawah Stage.
+- Semua file MP4 juga tersimpan otomatis di folder `out/`.
+
+## 11. Troubleshooting
+
+**Tidak bisa membuka aplikasi**  
+Jalankan ulang `start.bat`, lalu buka `http://localhost:5173` secara manual.
+
+**Klik Render MP4 tetapi gagal**  
+Tunggu bila ada render lain yang sedang berjalan. Engine sengaja hanya memproses satu render dalam satu waktu agar file tidak tertukar.
+
+**Port 3001 atau 5173 sudah dipakai**  
+Klik `stop.bat`, tutup terminal lama, lalu jalankan `start.bat` kembali.
+
+**Props JSON merah/error**  
+JSON harus lengkap: semua teks memakai tanda kutip, item dipisahkan koma, dan kurung `{}` harus berpasangan. Gunakan field Text/Title/Value untuk pengeditan biasa.
+
+**Video hasil render tidak langsung terlihat**  
+Tunggu pesan render selesai. Untuk video lebih panjang, proses memang membutuhkan waktu lebih lama.
+
+## 12. Menghentikan aplikasi
+
+Di Windows, klik dua kali `stop.bat`. Jika menjalankan lewat terminal, tekan `Ctrl + C`.
+
+---
+
+Dokumen teknis dan roadmap tersedia di folder `docs/`. Untuk pemakaian sehari-hari, cukup ikuti langkah Script Planner → Scene Builder → Render MP4 di atas.

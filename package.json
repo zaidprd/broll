@@ -9,6 +9,7 @@
     "b-roll:script": "node scripts/broll.mjs --preset script-hero",
     "b-roll:serif": "node scripts/broll.mjs --preset serif-italic",
     "b-roll:mono": "node scripts/broll.mjs --preset mono-bold",
+    "b-roll:motion": "node scripts/broll.mjs --preset motion-engine-demo --output out/motion-engine-v2-demo.mp4",
     "studio": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts Broll out/video.mp4",
     "ui:api": "node api/server.mjs",
@@ -23,7 +24,8 @@
     "@remotion/google-fonts": "^4.0.509",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "remotion": "^4.0.509"
+    "remotion": "^4.0.509",
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",

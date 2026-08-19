@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "1.0",
+  "id": "motion-engine-demo",
+  "title": "Motion Engine V2 Demo",
+  "format": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "background": "@colors.ink"
+  },
+  "tokens": {
+    "colors": {
+      "ink": "#0A0A0A",
+      "paper": "#F3F0E8",
+      "lime": "#A3E635",
+      "blue": "#3B82F6"
+    },
+    "fonts": {
+      "display": "display",
+      "sans": "sans",
+      "mono": "mono"
+    },
+    "spacing": {
+      "page": 80,
+      "gap": 24
+    }
+  },
+  "assets": {},
+  "scenes": [
+    {
+      "id": "hook",
+      "durationFrames": 105,
+      "layers": [
+        {
+          "id": "visuals-hook",
+          "zIndex": 10,
+          "clips": [
+            {
+              "id": "hook-label",
+              "kind": "typography.label",
+              "at": 0,
+              "durationFrames": 90,
+              "enter": { "preset": "fade", "durationFrames": 10 },
+              "props": {
+                "text": "ZAID PRD MOTION ENGINE",
+                "layout": { "position": [82, 88] },
+                "font": "mono",
+                "fontSize": 22,
+                "letterSpacing": 0.08,
+                "opacity": 0.8
+              }
+            },
+            {
+              "id": "hook-title",
+              "kind": "typography.headline",
+              "at": 10,
+              "durationFrames": 95,
+              "enter": { "preset": "slideUp", "durationFrames": 20 },
+              "props": {
+                "text": "EXPLAIN MORE.",
+                "layout": { "position": [78, 155] },
+                "font": "display",
+                "fontSize": 94,
+                "fontWeight": 800,
+                "letterSpacing": -0.06,
+                "sfx": "riser",
+                "sfxOffset": -0.1
+              }
+            },
+            {
+              "id": "hook-metric",
+              "kind": "chart.metric",
+              "at": 24,
+              "durationFrames": 70,
+              "enter": { "preset": "scaleIn", "durationFrames": 18 },
+              "props": {
+                "position": [900, 400],
+                "value": "1",
+                "label": "MOTION SYSTEM",
+                "accent": "#A3E635"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "demo-ui",
+      "durationFrames": 135,
+      "layers": [
+        {
+          "id": "visuals-ui",
+          "zIndex": 10,
+          "clips": [
+            {
+              "id": "browser-window",
+              "kind": "ui.browser",
+              "at": 0,
+              "durationFrames": 135,
+              "enter": { "preset": "scaleIn", "durationFrames": 18 },
+              "props": {
+                "title": "Automate your workflow",
+                "subtitle": "app.local / automation",
+                "layout": { "position": [160, 100], "width": 900, "height": 510 },
+                "sections": [
+                  { "label": "Trigger", "value": "New lead" },
+                  { "label": "Action", "value": "Send a response", "active": true }
+                ]
+              }
+            },
+            {
+              "id": "browser-cursor",
+              "kind": "ui.cursor",
+              "at": 38,
+              "durationFrames": 60,
+              "enter": { "preset": "fade", "durationFrames": 8 },
+              "props": { "position": [860, 417], "click": true }
+            },
+            {
+              "id": "browser-spotlight",
+              "kind": "effect.spotlight",
+              "at": 42,
+              "durationFrames": 55,
+              "enter": { "preset": "fade", "durationFrames": 10 },
+              "props": { "rect": [190, 384, 840, 83], "dimOpacity": 0.58 }
+            },
+            {
+              "id": "browser-callout",
+              "kind": "callout.pointer",
+              "at": 55,
+              "durationFrames": 65,
+              "enter": { "preset": "slideLeft", "durationFrames": 12 },
+              "props": { "position": [920, 325], "text": "Choose the action", "side": "left" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "workflow",
+      "durationFrames": 145,
+      "layers": [
+        {
+          "id": "visuals-workflow",
+          "zIndex": 10,
+          "clips": [
+            {
+              "id": "workflow-title",
+              "kind": "typography.body",
+              "at": 0,
+              "durationFrames": 100,
+              "enter": { "preset": "slideUp", "durationFrames": 14 },
+              "props": {
+                "text": "ONE IDEA → A CLEAR VISUAL FLOW",
+                "layout": { "position": [130, 90] },
+                "font": "display",
+                "fontSize": 48,
+                "fontWeight": 800,
+                "letterSpacing": -0.05
+              }
+            },
+            {
+              "id": "workflow-flow",
+              "kind": "workflow.flow",
+              "at": 18,
+              "durationFrames": 120,
+              "enter": { "preset": "fade", "durationFrames": 12 },
+              "props": {
+                "position": [130, 220],
+                "width": 1020,
+                "nodes": [
+                  { "id": "script", "label": "Script", "icon": "TXT" },
+                  { "id": "plan", "label": "Visual plan", "icon": "MAP" },
+                  { "id": "render", "label": "Render", "icon": "MP4", "tone": "#A3E635" }
+                ]
+              }
+            },
+            {
+              "id": "workflow-notification",
+              "kind": "ui.notification",
+              "at": 80,
+              "durationFrames": 55,
+              "enter": { "preset": "wordPop", "durationFrames": 12 },
+              "props": {
+                "layout": { "position": [430, 540], "width": 430 },
+                "title": "Ready to render",
+                "body": "Each scene has one job.",
+                "tone": "success"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,52 +1,60 @@
 @echo off
-REM ============================================================
-REM Broll Studio — Start script
-REM Buka API + Web UI di window terpisah
-REM ============================================================
-
 setlocal
 
-REM Get absolute path of this script
+REM ============================================================
+REM ZAID PRD Motion Engine — Start lokal
+REM Jalankan API + Web UI dari root project dengan npm run ui
+REM ============================================================
+
 set "ROOT=%~dp0"
-set "ROOT=%ROOT:~0,-1%"
 
 echo.
 echo ============================================================
-echo   Broll Studio — Starting
+echo   ZAID PRD Motion Engine — Starting
 echo ============================================================
 echo.
 
-REM Check if already running
+where node >nul 2>&1
+if errorlevel 1 (
+  echo [ERROR] Node.js belum ditemukan.
+  echo Install Node.js 18+ dari https://nodejs.org
+  pause
+  exit /b 1
+)
+
+if not exist "%ROOT%node_modules" (
+  echo [ERROR] Dependencies belum diinstall.
+  echo Klik setup.bat terlebih dahulu, lalu coba start.bat lagi.
+  pause
+  exit /b 1
+)
+
+if not exist "%ROOT%web\node_modules" (
+  echo [ERROR] Dependencies web belum diinstall.
+  echo Klik setup.bat terlebih dahulu, lalu coba start.bat lagi.
+  pause
+  exit /b 1
+)
+
 netstat -aon | findstr ":3001" | findstr "LISTENING" >nul 2>&1
-if %ERRORLEVEL% EQU 0 (
-  echo API sudah jalan di port 3001.
-) else (
-  echo Starting API server...
-  start "Broll API" /MIN cmd /k "pushd ""%ROOT%\api"" ^&^& node server.mjs"
-  timeout /t 3 /nobreak >nul
-)
-
+set "API_RUNNING=%ERRORLEVEL%"
 netstat -aon | findstr ":5173" | findstr "LISTENING" >nul 2>&1
-if %ERRORLEVEL% EQU 0 (
-  echo Web UI sudah jalan di port 5173.
-) else (
-  echo Starting Web UI...
-  start "Broll Web" /MIN cmd /k "pushd ""%ROOT%\web"" ^&^& npm run dev"
-  timeout /t 5 /nobreak >nul
+set "WEB_RUNNING=%ERRORLEVEL%"
+
+if "%API_RUNNING%"=="0" if "%WEB_RUNNING%"=="0" (
+  echo Motion Engine sudah berjalan.
+  start "" "http://127.0.0.1:5173"
+  exit /b 0
 )
 
-echo.
-echo ============================================================
-echo.
-echo   API:  http://127.0.0.1:3001
-echo   Web:  http://127.0.0.1:5173
-echo.
-echo   Browser akan terbuka otomatis...
-echo   Tekan Ctrl+C di window API atau Web untuk stop.
-echo ============================================================
+echo Menjalankan API dan Web UI...
+echo Window baru akan terbuka. Biarkan window tersebut tetap menyala.
 echo.
 
-timeout /t 2 /nobreak >nul
+REM /D memastikan npm run ui selalu berjalan dari root project.
+start "ZAID PRD Motion Engine" /D "%ROOT%" cmd /k "npm run ui"
+
+timeout /t 4 /nobreak >nul
 start "" "http://127.0.0.1:5173"
 
 endlocal

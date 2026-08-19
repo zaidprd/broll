@@ -27,6 +27,9 @@ type TypographyProps = {
   fontWeight?: number;
   fontSize: number;
   letterSpacing?: number;
+  /** Lebar teks. Bila tidak diisi, engine memakai safe area otomatis. */
+  maxWidth?: number;
+  textAlign?: "left" | "center" | "right";
   rotation?: number;
   opacity?: number;
   sfx?: "auto" | "whoosh" | "impact" | "tick" | "riser" | "click" | "silent" | "custom";
@@ -42,7 +45,7 @@ export const TypographyClip: React.FC<{
   sfxVolume: number;
 }> = ({ props, enter, durationInFrames, audioEnabled, sfxVolume }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width } = useVideoConfig();
   const animationDuration = enter?.durationFrames ?? 1;
   const progress = interpolate(frame, [0, animationDuration], [0, 1], {
     extrapolateLeft: "clamp",
@@ -63,6 +66,8 @@ export const TypographyClip: React.FC<{
     default: break;
   }
 
+  const safeTextWidth = Math.max(240, width - props.layout.position[0] - 80);
+  const maxWidth = props.maxWidth ?? safeTextWidth;
   const peakOpacity = props.opacity ?? 1;
   const opacity = interpolate(
     frame,
@@ -104,7 +109,11 @@ export const TypographyClip: React.FC<{
           transform: `translate(${props.layout.position[0] + tx}px, ${props.layout.position[1] + ty}px) rotate(${props.rotation ?? 0}deg) scale(${scale})`,
           transformOrigin: "top left",
           opacity,
-          whiteSpace: "nowrap",
+          // Headline panjang harus membentuk komposisi multi-baris, bukan keluar frame.
+          maxWidth,
+          whiteSpace: "pre-wrap",
+          overflowWrap: "break-word",
+          textAlign: props.textAlign ?? "left",
           userSelect: "none",
         }}
       >

@@ -13,6 +13,7 @@ const typographyPropsSchema = z.object({
   font: z.enum(["display", "displayItalic", "sans", "classic", "mono", "script", "playfair"]),
   fontStyle: z.enum(["normal", "italic"]).optional(), fontWeight: z.number().int().min(100).max(1000).optional(),
   fontSize: z.number().positive().max(600), letterSpacing: z.number().min(-1).max(1).optional(),
+  maxWidth: z.number().positive().max(4000).optional(), textAlign: z.enum(["left", "center", "right"]).optional(),
   rotation: z.number().min(-20).max(20).optional(), opacity: z.number().min(0).max(1).optional(),
   sfx, sfxFile: z.string().min(1).optional(), sfxOffset: z.number().min(-3).max(3).optional(),
 });

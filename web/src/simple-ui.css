@@ -1,0 +1,86 @@
+.simple-mode {
+  grid-template-columns: 260px minmax(0, 1fr) 340px;
+}
+
+.simple-mode .motion-nav {
+  overflow-y: auto;
+}
+
+.simple-mode .nav-section {
+  margin-top: 8px;
+}
+
+.simple-mode .project-item {
+  padding: 11px 12px;
+  border-left: 2px solid transparent;
+}
+
+.simple-mode .project-item.active {
+  color: var(--lime);
+  background: #1e293b;
+  border-left-color: #10b981;
+}
+
+.simple-mode .advanced-toggle {
+  margin-top: 18px;
+  border: 1px solid #302f29;
+}
+
+.simple-mode .builder-panel {
+  grid-template-columns: 1fr;
+}
+
+.simple-mode .scene-rail,
+.simple-mode .timeline,
+.simple-mode .stage-clip,
+.simple-mode .stage-canvas .stage-preview {
+  display: none;
+}
+
+.simple-mode .stage {
+  padding: 24px;
+  justify-content: flex-start;
+}
+
+.simple-mode .stage-canvas {
+  display: grid;
+  place-items: center;
+  max-height: 400px;
+  background: #111827;
+}
+
+.simple-mode .stage-canvas::before {
+  content: "Klik Render MP4 untuk melihat preview";
+  color: #94a3b8;
+  font: 13px "DM Mono", monospace;
+}
+
+.simple-mode .stage-label {
+  display: none;
+}
+
+.simple-mode .render-preview {
+  margin: 0;
+}
+
+.simple-mode .render-preview video {
+  max-height: 520px;
+  background: #0f172a;
+}
+
+.simple-mode .motion-inspector {
+  padding-top: 28px;
+}
+
+.simple-mode .clip-editor {
+  margin-top: 0;
+}
+
+.simple-mode .clip-editor-title {
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.simple-mode .audio-box {
+  margin-top: 22px;
+}

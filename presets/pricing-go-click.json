@@ -2,13 +2,13 @@
   "schemaVersion": "1.0",
   "id": "pricing-go-click",
   "title": "B-roll 03 — Pricing Go, Plus & Business",
-  "format": {"width": 1920, "height": 864, "fps": 30, "background": "#F5F5F3"},
+  "format": {"width": 1920, "height": 864, "fps": 30, "background": "#F8FAFC"},
   "tokens": {"colors": {"ink": "#1E293B", "paper": "#FFFFFF", "accent": "#10B981", "blue": "#2563EB", "light": "#F8FAFC"}, "fonts": {"display": "display", "sans": "sans"}, "spacing": {"page": 72, "gap": 20}},
   "assets": {},
   "scenes": [{
     "id": "pricing-select-go",
     "durationFrames": 135,
-    "background": "#F5F5F3",
+    "background": "#F8FAFC",
     "layers": [{
       "id": "pricing-ui",
       "zIndex": 10,

@@ -9,7 +9,7 @@ import { getSfxUrl, type SfxType } from "../../sfx/synth";
 import { resolveSfx } from "../../sfx/mapper";
 import type { ClipAnimation } from "../../engine/MotionProject";
 
-const CREAM = "#F3F0E8";
+const CREAM = "#FFFFFF";
 const SFX_URLS: Record<SfxType, string> = {
   whoosh: getSfxUrl("whoosh"),
   impact: getSfxUrl("impact"),
@@ -122,7 +122,7 @@ export const TypographyClip: React.FC<{
         }}
       >
         {props.highlight?.word ? props.text.split(new RegExp(`(${props.highlight.word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi")).map((part, index) => part.toLowerCase() === props.highlight?.word.toLowerCase() ? <span key={index} style={{
-          backgroundImage: `linear-gradient(176deg, transparent 8%, ${props.highlight.color ?? "#FDE047"} 10%, ${props.highlight.color ?? "#FDE047"} 88%, transparent 91%)`,
+          backgroundImage: `linear-gradient(176deg, transparent 8%, ${props.highlight.color ?? "#10B981"} 10%, ${props.highlight.color ?? "#10B981"} 88%, transparent 91%)`,
           backgroundRepeat: "no-repeat",
           backgroundSize: `${markerProgress * 108}% 100%`,
           padding: "0 0.08em",

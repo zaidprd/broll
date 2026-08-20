@@ -24,7 +24,7 @@ const frameStyle = (props: EditorialMediaProps, motion: ReturnType<typeof useEnt
   opacity: (props.opacity ?? 1) * motion.opacity,
   transform: `translate(${motion.x}px, ${motion.y}px) scale(${motion.scale})`,
   transformOrigin: "center center",
-  background: "#101010",
+  background: "#1E293B",
 });
 
 const mediaStyle = (fit: "cover" | "contain"): React.CSSProperties => ({

@@ -14,7 +14,7 @@ export const Icon: React.FC<{
   size?: number;
   color?: string;
   enter?: ClipAnimation;
-}> = ({ position, name, size = 80, color = "#A3E635", enter }) => {
+}> = ({ position, name, size = 80, color = "#10B981", enter }) => {
   const motion = useEntrance(enter);
   return <div style={{ position: "absolute", left: position[0], top: position[1], color, fontFamily: "JetBrains Mono", fontSize: size, fontWeight: 800, lineHeight: 1, opacity: motion.opacity, transform: `translate(${motion.x}px, ${motion.y}px) scale(${motion.scale})` }}>{ICONS[name] ?? "✦"}</div>;
 };

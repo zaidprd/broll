@@ -1,0 +1,19 @@
+:root {
+  --ink: #1e293b;
+  --panel: #1e293b;
+  --panel-2: #1e293b;
+  --line: #2563eb;
+  --cream: #ffffff;
+  --muted: #f8fafc;
+  --lime: #10b981;
+  --blue: #2563eb;
+  --danger: #2563eb;
+}
+
+html, body, #root, .motion-main { background: #1e293b; }
+.motion-nav, .motion-inspector, .motion-header { background: #1e293b; }
+.project-item:hover, .nav-tab:hover { background: #2563eb; color: #ffffff; }
+.render-button:hover, .planner-button:hover, .apply-accent:hover { background: #10b981; }
+.clip-editor input, .clip-editor textarea, .accent-editor select, .inspector-head select { background: #1e293b; color: #ffffff; border-color: #2563eb; }
+.motion-status.success { background: #1e293b; color: #ffffff; border-color: #10b981; }
+.motion-status.error { background: #1e293b; color: #ffffff; border-color: #2563eb; }

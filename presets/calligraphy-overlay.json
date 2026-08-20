@@ -2,9 +2,9 @@
   "schemaVersion": "1.0",
   "id": "calligraphy-overlay",
   "title": "Calligraphy Overlay — CapCut",
-  "format": {"width": 1920, "height": 864, "fps": 30, "background": "#00FF00"},
+  "format": {"width": 1920, "height": 864, "fps": 30, "background": "#1E293B"},
   "tokens": {
-    "colors": {"ink": "#181818", "paper": "#FFFAF0", "accent": "#23B5D3"},
+    "colors": {"ink": "#1E293B", "paper": "#FFFFFF", "accent": "#2563EB", "lime": "#10B981", "light": "#F8FAFC"},
     "fonts": {"display": "display", "sans": "sans", "script": "script"},
     "spacing": {"page": 120, "gap": 18}
   },
@@ -12,7 +12,7 @@
   "scenes": [{
     "id": "calligraphy-main",
     "durationFrames": 120,
-    "background": "#00FF00",
+    "background": "#1E293B",
     "layers": [{
       "id": "calligraphy-type",
       "zIndex": 10,

@@ -46,12 +46,11 @@ export function migrateLegacyPreset(
     },
     tokens: {
       colors: {
-        ink: "#0A0A0A",
-        paper: "#F3F0E8",
-        lime: "#A3E635",
-        yellow: "#FFD600",
-        blue: "#3B82F6",
-        orange: "#F97316",
+        ink: "#1E293B",
+        paper: "#FFFFFF",
+        lime: "#10B981",
+        blue: "#2563EB",
+        light: "#F8FAFC",
       },
       fonts: {
         display: "display",

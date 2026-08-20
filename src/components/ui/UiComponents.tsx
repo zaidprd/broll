@@ -21,17 +21,17 @@ export const BrowserWindow: React.FC<Base & {
   const motion = useEntrance(enter);
   return (
     <div style={{ position: "absolute", left: layout.position[0], top: layout.position[1], width: layout.width ?? 900, height: layout.height ?? 510, overflow: "hidden", ...panelStyle, opacity: motion.opacity, transform: `translate(${motion.x}px, ${motion.y}px) scale(${motion.scale})` }}>
-      <div style={{ height: 54, display: "flex", alignItems: "center", gap: 10, padding: "0 20px", borderBottom: "1px solid rgba(243,240,232,.11)", background: "#141414" }}>
+      <div style={{ height: 54, display: "flex", alignItems: "center", gap: 10, padding: "0 20px", borderBottom: "1px solid rgba(255,255,255,.11)", background: theme.bg }}>
         {[theme.accent.blue, theme.primary, theme.text].map((color) => <span key={color} style={{ width: 10, height: 10, borderRadius: 99, background: color }} />)}
-        <span style={{ color: "#A6A6A6", fontFamily: "JetBrains Mono", fontSize: 15, marginLeft: 10 }}>{subtitle ?? "app.local / settings"}</span>
+        <span style={{ color: theme.surface, fontFamily: "JetBrains Mono", fontSize: 15, marginLeft: 10 }}>{subtitle ?? "app.local / settings"}</span>
       </div>
       <div style={{ padding: 42, color: CREAM, fontFamily: "Inter" }}>
         <div style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: 42, letterSpacing: -1.6 }}>{title}</div>
         <div style={{ display: "grid", gap: 14, marginTop: 34 }}>
           {sections.map((section) => (
-            <div key={section.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 22px", borderRadius: 12, background: section.active ? "rgba(163,230,53,.12)" : "rgba(255,255,255,.055)", border: `1px solid ${section.active ? "rgba(163,230,53,.48)" : "rgba(255,255,255,.08)"}` }}>
+            <div key={section.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 22px", borderRadius: 12, background: section.active ? "rgba(16,185,129,.12)" : "rgba(248,250,252,.055)", border: `1px solid ${section.active ? "rgba(16,185,129,.48)" : "rgba(255,255,255,.08)"}` }}>
               <span style={{ fontSize: 22, fontWeight: 600 }}>{section.label}</span>
-              <span style={{ color: section.active ? LIME : "#BFBFBF", fontSize: 18 }}>{section.value}</span>
+              <span style={{ color: section.active ? LIME : theme.surface, fontSize: 18 }}>{section.value}</span>
             </div>
           ))}
         </div>
@@ -42,10 +42,10 @@ export const BrowserWindow: React.FC<Base & {
 
 export const NotificationCard: React.FC<Base & { title: string; body?: string; tone?: "success" | "warning" | "info" }> = ({ layout, enter, title, body, tone = "success" }) => {
   const motion = useEntrance(enter);
-  const color = tone === "warning" ? "#F97316" : tone === "info" ? "#3B82F6" : LIME;
+  const color = tone === "success" ? LIME : theme.accent.blue;
   return <div style={{ position: "absolute", left: layout.position[0], top: layout.position[1], width: layout.width ?? 420, padding: 22, ...panelStyle, opacity: motion.opacity, transform: `translate(${motion.x}px, ${motion.y}px) scale(${motion.scale})`, borderLeft: `4px solid ${color}`, color: CREAM, fontFamily: "Inter" }}>
     <div style={{ display: "flex", gap: 12, alignItems: "center" }}><span style={{ color, fontSize: 24 }}>●</span><strong style={{ fontSize: 20 }}>{title}</strong></div>
-    {body && <div style={{ marginTop: 10, color: "#B8B8B8", fontSize: 16, lineHeight: 1.45 }}>{body}</div>}
+    {body && <div style={{ marginTop: 10, color: theme.surface, fontSize: 16, lineHeight: 1.45 }}>{body}</div>}
   </div>;
 };
 
@@ -54,8 +54,8 @@ export const AppGrid: React.FC<Base & { title?: string; items: Array<{ icon?: st
   return <div style={{ position: "absolute", left: layout.position[0], top: layout.position[1], width: layout.width ?? 920, opacity: motion.opacity, transform: `translate(${motion.x}px, ${motion.y}px) scale(${motion.scale})`, color: CREAM }}>
     {title && <div style={{ fontFamily: "Plus Jakarta Sans", fontSize: 46, fontWeight: 800, marginBottom: 24 }}>{title}</div>}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
-      {items.map((item, index) => <div key={`${item.label}-${index}`} style={{ ...panelStyle, padding: 24, minHeight: 150, borderColor: item.accent ? "rgba(163,230,53,.6)" : "rgba(243,240,232,.14)" }}>
-        <div style={{ color: item.accent ? LIME : "#9C9C9C", fontFamily: "JetBrains Mono", fontSize: 22 }}>{item.icon ?? "✦"}</div>
+      {items.map((item, index) => <div key={`${item.label}-${index}`} style={{ ...panelStyle, padding: 24, minHeight: 150, borderColor: item.accent ? "rgba(16,185,129,.6)" : "rgba(255,255,255,.14)" }}>
+        <div style={{ color: item.accent ? LIME : theme.surface, fontFamily: "JetBrains Mono", fontSize: 22 }}>{item.icon ?? "✦"}</div>
         <div style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 700, fontSize: 23, marginTop: 28 }}>{item.label}</div>
       </div>)}
     </div>
@@ -157,32 +157,32 @@ export const OfferDashboard: React.FC<{
       <Sequence from={78} durationInFrames={24}><Audio src={getSfxUrl("click")} volume={0.55} /></Sequence>
       <Sequence from={83} durationInFrames={30}><Audio src={getSfxUrl("impact")} volume={0.18} /></Sequence>
     </>}
-    <div style={{position: "absolute", inset: 0, overflow: "hidden", background: "#080808", opacity: dashboardOpacity}}>
+    <div style={{position: "absolute", inset: 0, overflow: "hidden", background: theme.bg, opacity: dashboardOpacity}}>
       <div style={{position: "absolute", inset: -22, scale: dashboardScale, transformOrigin: "50% 65%"}}>
-        <div style={{position: "absolute", left: 0, top: 0, width: 72, height: "100%", borderRight: "1px solid #262626", background: "#0D0D0D"}}>
-          {["◫", "✎", "⌕", "◌"].map((icon, index) => <div key={icon} style={{color: index === 1 ? "#F4F4F4" : "#8C8C8C", font: "24px Inter", margin: index === 0 ? "35px 0 0 24px" : "28px 0 0 24px"}}>{icon}</div>)}
-          <div style={{position: "absolute", bottom: 28, left: 19, width: 38, height: 38, borderRadius: 99, background: "#75413A", color: "#FFF", display: "flex", alignItems: "center", justifyContent: "center", font: "700 12px Inter"}}>ZA</div>
+        <div style={{position: "absolute", left: 0, top: 0, width: 72, height: "100%", borderRight: `1px solid ${theme.accent.blue}`, background: theme.bg}}>
+          {["◫", "✎", "⌕", "◌"].map((icon, index) => <div key={icon} style={{color: index === 1 ? theme.text : theme.surface, font: "24px Inter", margin: index === 0 ? "35px 0 0 24px" : "28px 0 0 24px"}}>{icon}</div>)}
+          <div style={{position: "absolute", bottom: 28, left: 19, width: 38, height: 38, borderRadius: 99, background: theme.accent.blue, color: theme.text, display: "flex", alignItems: "center", justifyContent: "center", font: "700 12px Inter"}}>ZA</div>
         </div>
 
-        <div style={{position: "absolute", left: 850, top: 28, width: 220, height: 45, borderRadius: 24, background: "#1D1D1D", display: "flex", color: "#EAEAEA", font: "600 15px Inter"}}>
-          <span style={{flex: 1, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 22, background: "#292929"}}>Chat</span>
+        <div style={{position: "absolute", left: 850, top: 28, width: 220, height: 45, borderRadius: 24, background: theme.accent.blue, display: "flex", color: theme.text, font: "600 15px Inter"}}>
+          <span style={{flex: 1, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 22, background: theme.bg}}>Chat</span>
           <span style={{flex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}>Work</span>
         </div>
 
-        <div style={{position: "absolute", left: 0, top: 292, width: "100%", textAlign: "center", color: "#F4F4F4", font: "500 30px Inter"}}>{greeting}</div>
-        <div style={{position: "absolute", left: 550, top: 356, width: 820, height: 66, borderRadius: 34, background: "#252525", border: "1px solid #333", display: "flex", alignItems: "center", color: "#9D9D9D", font: "18px Inter"}}>
-          <span style={{fontSize: 31, color: "#E7E7E7", marginLeft: 24}}>＋</span><span style={{marginLeft: 18}}>Ask anything</span>
-          <span style={{marginLeft: "auto", marginRight: 24, color: "#BDBDBD"}}>Instant⌄　◉</span>
+        <div style={{position: "absolute", left: 0, top: 292, width: "100%", textAlign: "center", color: theme.text, font: "500 30px Inter"}}>{greeting}</div>
+        <div style={{position: "absolute", left: 550, top: 356, width: 820, height: 66, borderRadius: 34, background: theme.bg, border: `1px solid ${theme.accent.blue}`, display: "flex", alignItems: "center", color: theme.surface, font: "18px Inter"}}>
+          <span style={{fontSize: 31, color: theme.text, marginLeft: 24}}>＋</span><span style={{marginLeft: 18}}>Ask anything</span>
+          <span style={{marginLeft: "auto", marginRight: 24, color: theme.surface}}>Instant⌄　◉</span>
         </div>
-        <div style={{position: "absolute", left: 588, top: 462, color: "#A8A8A8", font: "16px Inter", lineHeight: 3.15}}>
+        <div style={{position: "absolute", left: 588, top: 462, color: theme.surface, font: "16px Inter", lineHeight: 3.15}}>
           <div>▣　Create a campaign brief</div><div>▣　Summarize a document</div><div>◉　Build a weekly workflow</div>
         </div>
 
-        <div style={{position: "absolute", left: cardPosition[0], top: cardPosition[1], width: 810, height: 126, borderRadius: 24, background: "linear-gradient(135deg, #202220, #171917)", border: `1px solid rgba(255,255,255,${0.12 + glow * 0.28})`, boxShadow: `0 18px 60px rgba(0,0,0,.48), 0 0 ${glow * 46}px ${accent}`, opacity: cardOpacity, translate: `0px ${cardY}px`, scale: click}}>
+        <div style={{position: "absolute", left: cardPosition[0], top: cardPosition[1], width: 810, height: 126, borderRadius: 24, background: theme.bg, border: `1px solid rgba(255,255,255,${0.12 + glow * 0.28})`, boxShadow: `0 18px 60px rgba(30,41,59,.48), 0 0 ${glow * 46}px ${accent}`, opacity: cardOpacity, translate: `0px ${cardY}px`, scale: click}}>
           <div style={{position: "absolute", left: 24, top: 24, width: 78, height: 78, borderRadius: 20, background: `${accent}22`, border: `1px solid ${accent}66`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 42}}>🎁</div>
-          <div style={{position: "absolute", left: 126, top: 26, color: "#FFF", font: "800 24px Plus Jakarta Sans", letterSpacing: -.5}}>{offerTitle}</div>
-          <div style={{position: "absolute", left: 126, top: 62, width: 450, color: "#B6B6B6", font: "16px Inter", lineHeight: 1.4}}>{offerBody}</div>
-          <div style={{position: "absolute", right: 30, top: 39, minWidth: 142, height: 50, borderRadius: 27, background: glow > .1 ? accent : "#F3F3F3", color: "#171717", display: "flex", alignItems: "center", justifyContent: "center", font: "700 16px Inter", padding: "0 18px"}}>{buttonLabel}</div>
+          <div style={{position: "absolute", left: 126, top: 26, color: theme.text, font: "800 24px Plus Jakarta Sans", letterSpacing: -.5}}>{offerTitle}</div>
+          <div style={{position: "absolute", left: 126, top: 62, width: 450, color: theme.surface, font: "16px Inter", lineHeight: 1.4}}>{offerBody}</div>
+          <div style={{position: "absolute", right: 30, top: 39, minWidth: 142, height: 50, borderRadius: 27, background: glow > .1 ? accent : theme.surface, color: theme.bg, display: "flex", alignItems: "center", justifyContent: "center", font: "700 16px Inter", padding: "0 18px"}}>{buttonLabel}</div>
         </div>
       </div>
 
@@ -275,8 +275,8 @@ export const PricingDashboard: React.FC<{
 
   const plans = [
     {name: "ChatGPT Go", tagline: "Keep chatting", price: goPrice, suffix: "/ month", button: "Upgrade to Go", accent: LIME, features: ["Expanded access to chat", "More image creation", "Expanded voice mode"]},
-    {name: "ChatGPT Plus", tagline: "Your AI assistant", price: plusPrice, suffix: "/ month", button: "Upgrade to Plus", accent: "#111", recommended: true, features: ["Advanced intelligence", "Higher quality images", "Projects and Codex"]},
-    {name: "ChatGPT Business", tagline: "Work securely as a team", price: businessPrice, suffix: "/ user / month", button: "Get Business", accent: "#111", features: ["Secure team workspace", "Admin controls", "Company knowledge"]},
+    {name: "ChatGPT Plus", tagline: "Your AI assistant", price: plusPrice, suffix: "/ month", button: "Upgrade to Plus", accent: theme.bg, recommended: true, features: ["Advanced intelligence", "Higher quality images", "Projects and Codex"]},
+    {name: "ChatGPT Business", tagline: "Work securely as a team", price: businessPrice, suffix: "/ user / month", button: "Get Business", accent: theme.bg, features: ["Secure team workspace", "Admin controls", "Company knowledge"]},
   ];
 
   return <>
@@ -286,12 +286,12 @@ export const PricingDashboard: React.FC<{
       <Sequence from={102} durationInFrames={24}><Audio src={getSfxUrl("click")} volume={.62} /></Sequence>
       <Sequence from={108} durationInFrames={26}><Audio src={getSfxUrl("impact")} volume={.18} /></Sequence>
     </>}
-    <div style={{position: "absolute", inset: 0, overflow: "hidden", background: "#F5F5F3", opacity: pageOpacity}}>
+    <div style={{position: "absolute", inset: 0, overflow: "hidden", background: theme.surface, opacity: pageOpacity}}>
       <div style={{position: "absolute", inset: -28, scale: pageScale, transformOrigin: "505px 610px"}}>
-        <div style={{position: "absolute", left: 0, top: 0, width: "100%", height: 74, background: "#FFF", borderBottom: "1px solid #DDD", display: "flex", alignItems: "center", color: "#1D1D1D", font: "16px Inter"}}>
+        <div style={{position: "absolute", left: 0, top: 0, width: "100%", height: 74, background: theme.text, borderBottom: `1px solid ${theme.accent.blue}`, display: "flex", alignItems: "center", color: theme.bg, font: "16px Inter"}}>
           <span style={{marginLeft: 36, fontSize: 26}}>◉</span><b style={{marginLeft: 12}}>ChatGPT Plans</b><span style={{marginLeft: "auto", marginRight: 38, color: "#777"}}>Personal　　Business</span>
         </div>
-        <div style={{position: "absolute", top: 108, width: "100%", textAlign: "center", color: "#111"}}>
+        <div style={{position: "absolute", top: 108, width: "100%", textAlign: "center", color: theme.bg}}>
           <div style={{font: "500 36px Plus Jakarta Sans", letterSpacing: -1.2}}>Upgrade your plan</div>
           <div style={{font: "16px Inter", color: "#6D6D6D", marginTop: 12}}>Choose the plan that fits your needs</div>
         </div>
@@ -299,8 +299,8 @@ export const PricingDashboard: React.FC<{
           {plans.map((plan, index) => {
             const local = interpolate(frame, [12 + index * 7, 31 + index * 7], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(.16, 1, .3, 1)});
             const isGo = index === 0;
-            return <div key={plan.name} style={{position: "relative", width: 410, height: 535, padding: 30, borderRadius: 25, background: "#FFF", border: `2px solid ${isGo ? LIME : "#E3E3E3"}`, boxShadow: isGo ? `0 22px 65px rgba(0,0,0,.09), 0 0 ${clickGlow * 45}px ${LIME}` : "0 18px 50px rgba(0,0,0,.07)", opacity: local, transform: `translateY(${(1 - local) * 45}px)`, fontFamily: "Inter", color: "#111"}}>
-              {plan.recommended && <div style={{position: "absolute", right: 24, top: 24, borderRadius: 20, background: "#F0F0EB", color: "#555", padding: "7px 13px", fontSize: 12, fontWeight: 700}}>RECOMMENDED</div>}
+            return <div key={plan.name} style={{position: "relative", width: 410, height: 535, padding: 30, borderRadius: 25, background: theme.text, border: `2px solid ${isGo ? LIME : theme.accent.blue}`, boxShadow: isGo ? `0 22px 65px rgba(30,41,59,.09), 0 0 ${clickGlow * 45}px ${LIME}` : "0 18px 50px rgba(30,41,59,.07)", opacity: local, transform: `translateY(${(1 - local) * 45}px)`, fontFamily: "Inter", color: theme.bg}}>
+              {plan.recommended && <div style={{position: "absolute", right: 24, top: 24, borderRadius: 20, background: theme.surface, color: theme.accent.blue, padding: "7px 13px", fontSize: 12, fontWeight: 700}}>RECOMMENDED</div>}
               <div style={{fontSize: 20, fontWeight: 750}}>{plan.name}</div>
               <div style={{font: "600 31px Plus Jakarta Sans", letterSpacing: -1.2, marginTop: 34}}>{plan.tagline}</div>
               <div style={{display: "flex", alignItems: "baseline", gap: 8, marginTop: 48}}><span style={{fontSize: 18}}>{plan.price.startsWith("Rp") ? "" : ""}</span><strong style={{font: "500 43px Plus Jakarta Sans", letterSpacing: -1.5}}>{plan.price}</strong><span style={{fontSize: 15, color: "#666"}}>{plan.suffix}</span></div>

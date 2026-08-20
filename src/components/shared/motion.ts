@@ -29,8 +29,8 @@ export function useEntrance(animation?: ClipAnimation) {
 }
 
 export const panelStyle = {
-  background: "rgba(24, 24, 24, 0.96)",
-  border: "1px solid rgba(243, 240, 232, 0.16)",
+  background: "rgba(30, 41, 59, 0.96)",
+  border: "1px solid rgba(255, 255, 255, 0.16)",
   borderRadius: 18,
-  boxShadow: "0 24px 70px rgba(0, 0, 0, 0.38)",
+  boxShadow: "0 24px 70px rgba(30, 41, 59, 0.38)",
 } as const;

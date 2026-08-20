@@ -2,14 +2,15 @@
 // Brand colors — Zaid PRD visual identity
 
 export const theme = {
-  bg: "#0A0A0A",
+  bg: "#1E293B",
   text: "#FFFFFF",
-  primary: "#A3E635", // lime
+  surface: "#F8FAFC",
+  muted: "#94A3B8",
+  primary: "#10B981",
   accent: {
-    yellow: "#FFD600",
-    blue: "#3B82F6",
-    orange: "#F97316",
+    blue: "#2563EB",
   },
+  chroma: "#00FF00",
 } as const;
 
 export type Theme = typeof theme;

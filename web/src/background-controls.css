@@ -1,0 +1,26 @@
+.background-box {
+  margin-top: 30px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.background-box > span {
+  font: 10px "DM Mono", monospace;
+  color: #94a3b8;
+  letter-spacing: 0.1em;
+}
+
+.background-box select {
+  padding: 9px;
+  border: 1px solid #2563eb;
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.background-box select:disabled { opacity: 0.65; }
+.background-box small { color: #94a3b8; line-height: 1.45; }

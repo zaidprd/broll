@@ -27,6 +27,33 @@ const checklistProps = z.object({ title: z.string().optional(), layout, items: z
 const progressProps = z.object({ label: z.string(), value: z.number().min(0).max(100), accent: z.string().optional(), layout });
 const terminalProps = z.object({ lines: z.array(z.string()).min(1), layout });
 const cursorProps = z.object({ position, click: z.boolean().optional() });
+const offerDashboardProps = z.object({
+  greeting: z.string().optional(),
+  offerTitle: z.string().optional(),
+  offerBody: z.string().optional(),
+  buttonLabel: z.string().optional(),
+  accent: z.string().optional(),
+  cardPosition: position.optional(),
+  audioEnabled: z.boolean().optional(),
+});
+const paymentCollisionProps = z.object({
+  gopayAsset: z.string().optional(),
+  bcaAsset: z.string().optional(),
+  background: z.string().optional(),
+  audioEnabled: z.boolean().optional(),
+});
+const pricingDashboardProps = z.object({
+  goPrice: z.string().optional(),
+  plusPrice: z.string().optional(),
+  businessPrice: z.string().optional(),
+  audioEnabled: z.boolean().optional(),
+});
+const infographicProps = z.object({
+  variant: z.enum(["circular", "vertical"]).optional(), title: z.string().optional(), centerLabel: z.string().optional(), background: z.string().optional(),
+  items: z.array(z.object({label: z.string(), value: z.number().min(0).max(100), detail: z.string().optional()})).min(1).max(4).optional(),
+});
+const paymentWarningProps = z.object({eyebrow: z.string().optional(), italicWord: z.string().optional(), message: z.string().optional(), audioEnabled: z.boolean().optional()});
+const exchangeRateProps = z.object({rate: z.number().positive().optional(), currency: z.string().optional(), period: z.string().optional(), audioEnabled: z.boolean().optional()});
 const workflowProps = z.object({ position, width: z.number().positive().optional(), title: z.string().optional(), nodes: z.array(z.object({ id: z.string(), label: z.string(), icon: z.string().optional(), tone: z.string().optional() })).min(2) });
 const bigNumberProps = z.object({ position, value: z.string(), label: z.string().optional(), accent: z.string().optional() });
 const comparisonProps = z.object({ position, width: z.number().positive().optional(), left: z.object({ label: z.string(), value: z.string() }), right: z.object({ label: z.string(), value: z.string() }) });
@@ -57,6 +84,12 @@ const schemas = {
   "ui.progress": progressProps,
   "ui.terminal": terminalProps,
   "ui.cursor": cursorProps,
+  "ui.offerDashboard": offerDashboardProps,
+  "ui.paymentCollision": paymentCollisionProps,
+  "ui.pricingDashboard": pricingDashboardProps,
+  "infographic.preset": infographicProps,
+  "ui.paymentWarning": paymentWarningProps,
+  "chart.exchangeRate": exchangeRateProps,
   "workflow.flow": workflowProps,
   "chart.metric": bigNumberProps,
   "chart.comparison": comparisonProps,
@@ -87,7 +120,7 @@ export function validateComponentProps(kind: string, props: unknown): string[] {
 
 export const COMPONENT_FAMILIES = {
   typography: ["typography.headline", "typography.body", "typography.label"],
-  ui: ["ui.browser", "ui.notification", "ui.appGrid", "ui.checklist", "ui.progress", "ui.terminal", "ui.cursor"],
-  workflow: ["workflow.flow"], charts: ["chart.metric", "chart.comparison", "chart.bar", "chart.counter"],
+  ui: ["ui.browser", "ui.notification", "ui.appGrid", "ui.checklist", "ui.progress", "ui.terminal", "ui.cursor", "ui.offerDashboard", "ui.paymentCollision", "ui.pricingDashboard", "ui.paymentWarning"], infographic: ["infographic.preset"],
+  workflow: ["workflow.flow"], charts: ["chart.metric", "chart.comparison", "chart.bar", "chart.counter", "chart.exchangeRate"],
   callouts: ["callout.pointer"], effects: ["effect.spotlight"], devices: ["device.frame"], icons: ["icon"], media: ["media.image", "media.video"], audio: ["audio.clip"],
 } as const;

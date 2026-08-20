@@ -112,6 +112,7 @@ export const TypographyClip: React.FC<{
           transform: `translate(${props.layout.position[0] + tx}px, ${props.layout.position[1] + ty}px) rotate(${props.rotation ?? 0}deg) scale(${scale})`,
           transformOrigin: "top left",
           opacity,
+          clipPath: enter?.preset === "reveal" ? `inset(0 ${(1 - eased) * 100}% 0 0)` : undefined,
           // Headline panjang harus membentuk komposisi multi-baris, bukan keluar frame.
           maxWidth,
           whiteSpace: "pre-wrap",

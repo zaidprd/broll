@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0",
+  "id": "pricing-go-click",
+  "title": "B-roll 03 — Pricing Go, Plus & Business",
+  "format": {"width": 1920, "height": 864, "fps": 30, "background": "#F5F5F3"},
+  "tokens": {"colors": {"ink": "#1E293B", "paper": "#FFFFFF", "accent": "#10B981", "blue": "#2563EB", "light": "#F8FAFC"}, "fonts": {"display": "display", "sans": "sans"}, "spacing": {"page": 72, "gap": 20}},
+  "assets": {},
+  "scenes": [{
+    "id": "pricing-select-go",
+    "durationFrames": 135,
+    "background": "#F5F5F3",
+    "layers": [{
+      "id": "pricing-ui",
+      "zIndex": 10,
+      "clips": [{
+        "id": "pricing-dashboard",
+        "kind": "ui.pricingDashboard",
+        "at": 0,
+        "durationFrames": 135,
+        "props": {"goPrice": "Rp75.000", "plusPrice": "Rp349.000", "businessPrice": "$25", "audioEnabled": true}
+      }]
+    }]
+  }]
+}

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import "./styles.css";
+import "./background-controls.css";
 
 type Clip = { id: string; kind: string; at: number; durationFrames: number; enter?: { preset: string; durationFrames: number }; props: Record<string, any> };
 type Layer = { id: string; zIndex: number; clips: Clip[] };
-type Scene = { id: string; durationFrames: number; layers: Layer[] };
+type Scene = { id: string; durationFrames: number; background?: string; layers: Layer[] };
 type Project = { schemaVersion: "1.0"; id: string; title: string; format: { width: number; height: number; fps: number; background: string }; tokens: any; assets: Record<string, any>; scenes: Scene[] };
 type AudioSettings = { sfxEnabled: boolean; padEnabled: boolean; sfxVolume: number; padVolume: number };
 
@@ -13,12 +14,20 @@ const componentOptions = [
   ["typography.headline", "Kinetic Title"], ["typography.body", "Body Text"], ["typography.label", "Mono Label"],
   ["chart.metric", "Big Number"], ["chart.comparison", "Comparison"], ["chart.bar", "Bar Chart"], ["chart.counter", "Counter"],
   ["ui.browser", "Browser Window"], ["ui.appGrid", "App Grid"], ["ui.notification", "Notification"], ["ui.checklist", "Checklist"], ["ui.progress", "Progress Bar"], ["ui.terminal", "Terminal Typing"], ["ui.cursor", "Cursor Click"],
+  ["ui.offerDashboard", "Free Offer Dashboard"],
+  ["ui.paymentCollision", "GoPay + BCA Collision"],
+  ["ui.pricingDashboard", "Pricing: Go + Plus + Business"],
+  ["infographic.preset", "Infographic · Circular / Vertical"],
+  ["ui.paymentWarning", "Payment Warning · Italic"],
+  ["chart.exchangeRate", "USD / IDR Exchange Chart"],
   ["workflow.flow", "Workflow Flow"], ["callout.pointer", "Callout"], ["effect.spotlight", "Spotlight"], ["device.frame", "Device Frame"], ["media.image", "Image"], ["media.video", "Video"], ["icon", "Icon"],
 ] as const;
 
-const emptyProject = (): Project => ({ schemaVersion: "1.0", id: "new-project", title: "New Motion Project", format: { width: 1280, height: 720, fps: FPS, background: "#0A0A0A" }, tokens: { colors: { ink: "#0A0A0A", paper: "#F3F0E8", lime: "#A3E635" }, fonts: { display: "display", sans: "sans", mono: "mono" }, spacing: { page: 80, gap: 24 } }, assets: {}, scenes: [] });
+const emptyProject = (): Project => ({ schemaVersion: "1.0", id: "new-project", title: "New Motion Project", format: { width: 1280, height: 720, fps: FPS, background: "#1E293B" }, tokens: { colors: { ink: "#1E293B", paper: "#FFFFFF", lime: "#10B981", blue: "#2563EB", light: "#F8FAFC" }, fonts: { display: "display", sans: "sans", mono: "mono" }, spacing: { page: 80, gap: 24 } }, assets: {}, scenes: [] });
 
-const textBrollProject = (): Project => ({ schemaVersion: "1.0", id: "text-remotion", title: "Text Remotion", format: { width: 1280, height: 720, fps: FPS, background: "#0A0A0A" }, tokens: { colors: { ink: "#0A0A0A", paper: "#F3F0E8", lime: "#A3E635" }, fonts: { display: "display", sans: "sans", mono: "mono", classic: "classic" }, spacing: { page: 80, gap: 24 } }, assets: {}, scenes: [{ id: "text-scene", durationFrames: 105, layers: [{ id: "text-visuals", zIndex: 10, clips: [{ id: "text-label", kind: "typography.label", at: 0, durationFrames: 90, enter: { preset: "fade", durationFrames: 8 }, props: { text: "TEXT REMOTION", layout: { position: [84, 82] }, font: "mono", fontSize: 19, letterSpacing: 0.08, opacity: 0.72 } }, { id: "text-headline", kind: "typography.headline", at: 8, durationFrames: 92, enter: { preset: "slideUp", durationFrames: 18 }, props: { text: "TULIS PESAN\nKAMU DI SINI.", layout: { position: [80, 170] }, font: "display", fontSize: 82, fontWeight: 800, letterSpacing: -0.06, maxWidth: 900 } }] }] }] });
+const textBrollProject = (): Project => ({ schemaVersion: "1.0", id: "text-remotion", title: "Text Remotion", format: { width: 1280, height: 720, fps: FPS, background: "#1E293B" }, tokens: { colors: { ink: "#1E293B", paper: "#FFFFFF", lime: "#10B981", blue: "#2563EB", light: "#F8FAFC" }, fonts: { display: "display", sans: "sans", mono: "mono", classic: "classic" }, spacing: { page: 80, gap: 24 } }, assets: {}, scenes: [{ id: "text-scene", durationFrames: 105, layers: [{ id: "text-visuals", zIndex: 10, clips: [{ id: "text-label", kind: "typography.label", at: 0, durationFrames: 90, enter: { preset: "fade", durationFrames: 8 }, props: { text: "TEXT REMOTION", layout: { position: [84, 82] }, font: "mono", fontSize: 19, letterSpacing: 0.08, opacity: 0.72 } }, { id: "text-headline", kind: "typography.headline", at: 8, durationFrames: 92, enter: { preset: "slideUp", durationFrames: 18 }, props: { text: "TULIS PESAN\nKAMU DI SINI.", layout: { position: [80, 170] }, font: "display", fontSize: 82, fontWeight: 800, letterSpacing: -0.06, maxWidth: 900 } }] }] }] });
+
+const calligraphyOverlayProject = (): Project => ({ schemaVersion: "1.0", id: "calligraphy-overlay-local", title: "Calligraphy Overlay — CapCut", format: { width: 1920, height: 864, fps: FPS, background: "#00FF00" }, tokens: { colors: { ink: "#181818", paper: "#FFFAF0", accent: "#23B5D3" }, fonts: { display: "display", sans: "sans", script: "script" }, spacing: { page: 120, gap: 18 } }, assets: {}, scenes: [{ id: "calligraphy-main", durationFrames: 120, layers: [{ id: "calligraphy-type", zIndex: 10, clips: [{ id: "small-context", kind: "typography.label", at: 0, durationFrames: 108, enter: { preset: "reveal", durationFrames: 12 }, props: { text: "PEMBAYARAN", layout: { position: [670, 255] }, font: "sans", fontSize: 29, fontWeight: 700, letterSpacing: 0.22, color: "@colors.ink", maxWidth: 520, sfx: "silent" } }, { id: "calligraphy-word", kind: "typography.headline", at: 7, durationFrames: 106, enter: { preset: "reveal", durationFrames: 20 }, props: { text: "ditolak", layout: { position: [630, 270] }, font: "script", fontSize: 205, fontWeight: 400, letterSpacing: -0.045, color: "@colors.paper", rotation: -4, maxWidth: 760, sfx: "whoosh" } }, { id: "method-detail", kind: "typography.label", at: 22, durationFrames: 90, enter: { preset: "slideLeft", durationFrames: 14 }, props: { text: "LEWAT GOPAY", layout: { position: [1090, 505] }, font: "sans", fontSize: 25, fontWeight: 700, letterSpacing: 0.19, color: "@colors.ink", maxWidth: 430, sfx: "click" } }] }] }] });
 
 function safeId(value: string, fallback: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 32) || fallback; }
 function clipDefaults(kind: string, number: number): Clip {
@@ -36,12 +45,18 @@ function clipDefaults(kind: string, number: number): Clip {
   if (kind === "ui.progress") return { ...base, props: { layout: { position: [120, 300], width: 650 }, label: "Progress", value: 75 } };
   if (kind === "ui.terminal") return { ...base, props: { layout: { position: [160, 160], width: 700, height: 260 }, lines: ["> initialize workflow", "✓ ready"] } };
   if (kind === "ui.cursor") return { ...base, props: { position: [700, 350], click: true } };
-  if (kind === "workflow.flow") return { ...base, props: { position: [110, 250], width: 1050, nodes: [{ id: "input", label: "Input" }, { id: "process", label: "Process" }, { id: "output", label: "Output", tone: "#A3E635" }] } };
+  if (kind === "ui.offerDashboard") return { ...base, durationFrames: 120, props: { greeting: "Ready to dive in?", offerTitle: "FREE OFFER", offerBody: "Claim your complimentary access before it expires.", buttonLabel: "Claim now", accent: "#10B981", cardPosition: [555, 655], audioEnabled: true } };
+  if (kind === "ui.paymentCollision") return { ...base, durationFrames: 135, props: { gopayAsset: "uploads/gopay.jfif", bcaAsset: "uploads/bca.jfif", background: "#1E293B", audioEnabled: true } };
+  if (kind === "ui.pricingDashboard") return { ...base, durationFrames: 135, props: { goPrice: "Rp75.000", plusPrice: "Rp349.000", businessPrice: "$25", audioEnabled: true } };
+  if (kind === "infographic.preset") return { ...base, durationFrames: 135, props: { variant: "circular", title: "RINGKASAN DATA", centerLabel: "TOTAL", background: "#00FF00", items: [{ label: "Akses", value: 72, detail: "lebih cepat" }, { label: "Biaya", value: 48, detail: "lebih hemat" }, { label: "Hasil", value: 86, detail: "lebih optimal" }] } };
+  if (kind === "ui.paymentWarning") return { ...base, durationFrames: 120, props: { eyebrow: "PEMBAYARAN", italicWord: "ditolak", message: "Metode pembayaran belum dapat diproses", audioEnabled: true } };
+  if (kind === "chart.exchangeRate") return { ...base, durationFrames: 180, props: { rate: 17752, currency: "USD / IDR", period: "TREN JANGKA PANJANG", audioEnabled: true } };
+  if (kind === "workflow.flow") return { ...base, props: { position: [110, 250], width: 1050, nodes: [{ id: "input", label: "Input" }, { id: "process", label: "Process" }, { id: "output", label: "Output", tone: "#10B981" }] } };
   if (kind === "callout.pointer") return { ...base, props: { position: [760, 300], text: "Explain this action", side: "left" } };
   if (kind === "effect.spotlight") return { ...base, props: { rect: [150, 220, 700, 180], dimOpacity: 0.6 } };
   if (kind === "device.frame") return { ...base, props: { position: [820, 70], width: 310, height: 560, title: "Mobile App", frame: "phone" } };
   if (kind === "media.image" || kind === "media.video") return { ...base, props: { asset: "", layout: { position: [120, 100], width: 680, height: 440 }, fit: "cover", overlay: 0.2, radius: 8 } };
-  return { ...base, props: { position: [120, 120], name: "sparkles", size: 80, color: "#A3E635" } };
+  return { ...base, props: { position: [120, 120], name: "sparkles", size: 80, color: "#10B981" } };
 }
 
 export default function App() {
@@ -75,9 +90,25 @@ export default function App() {
   const selectedScene = project.scenes[sceneIndex];
   const selectedClip = selectedScene?.layers.flatMap((layer) => layer.clips).find((item) => item.id === clipId) ?? null;
   const projectDuration = project.scenes.reduce((sum, scene) => sum + scene.durationFrames, 0);
+  const hasFullDashboard = project.scenes.some((scene) => scene.layers.some((layer) => layer.clips.some((clip) => clip.kind === "ui.offerDashboard" || clip.kind === "ui.pricingDashboard")));
+  const backgroundMode = project.format.background.toUpperCase() === "#00FF00" ? "chroma" : "brand";
 
   function loadProject(next: Project) { setProject(structuredClone(next)); setSceneIndex(0); setClipId(null); setVideoUrl(null); setStatus(null); }
   function updateProject(updater: (current: Project) => Project) { setProject((current) => updater(structuredClone(current))); }
+  function setBackgroundMode(mode: "brand" | "chroma") {
+    const background = mode === "chroma" ? "#00FF00" : "#1E293B";
+    updateProject((current) => {
+      current.format.background = background;
+      current.scenes.forEach((scene) => {
+        scene.background = background;
+        scene.layers.forEach((layer) => layer.clips.forEach((clip) => {
+          if (clip.kind === "ui.paymentCollision" || clip.kind === "infographic.preset") clip.props.background = background;
+        }));
+      });
+      return current;
+    });
+    setStatus(mode === "chroma" ? "Chroma green aktif. Hindari lime pada objek yang akan di-key." : "Background kembali ke Dark Navy brand.");
+  }
   function updateSelectedClip(patch: Partial<Clip>) {
     if (!selectedClip) return;
     updateProject((current) => { const target = current.scenes[sceneIndex].layers.flatMap((layer) => layer.clips).find((item) => item.id === selectedClip.id); if (target) Object.assign(target, patch); return current; });
@@ -133,7 +164,7 @@ export default function App() {
   function applyAccent() {
     if (!selectedClip || selectedClip.kind !== "typography.headline") return;
     if (!accentWord.trim()) { setError("Masukkan Accent word terlebih dahulu."); return; }
-    const colors = { Lime: "@colors.lime", Cream: "@colors.paper", Blue: "#78A6FF" };
+    const colors = { Lime: "@colors.lime", Cream: "@colors.paper", Blue: "#2563EB" };
     let accentId = "";
     updateProject((current) => {
       const layer = current.scenes[sceneIndex].layers[0];
@@ -159,7 +190,7 @@ export default function App() {
     const word = highlightWord.trim();
     if (!word) { setError("Masukkan satu kata yang ingin diberi stabilo."); return; }
     if (!String(selectedClip.props.text || "").toLowerCase().includes(word.toLowerCase())) { setError("Kata stabilo harus ada di dalam Text component ini."); return; }
-    const colors = { Yellow: "#FDE047", Lime: "#A3E635", Blue: "#78A6FF" };
+    const colors = { Yellow: "#FFFFFF", Lime: "#10B981", Blue: "#2563EB" };
     updateProject((current) => {
       const layer = current.scenes[sceneIndex].layers[0];
       layer.clips = layer.clips.filter((clip) => clip.props.editorialAccentFor !== selectedClip.id);
@@ -189,6 +220,7 @@ export default function App() {
       <button className={`nav-tab ${tab === "builder" ? "active" : ""}`} onClick={() => setTab("builder")}>▦ Scene Builder</button>
       <button className={`nav-tab ${tab === "planner" ? "active" : ""}`} onClick={() => setTab("planner")}>✦ Script Planner</button>
       <button className="project-item text-remotion-button" onClick={() => { loadProject(textBrollProject()); setAdvancedVisuals(false); setTab("builder"); }}>+ Text Remotion</button>
+      <button className="project-item text-remotion-button" onClick={() => { loadProject(calligraphyOverlayProject()); setAdvancedVisuals(false); setTab("builder"); }}>+ Calligraphy Overlay</button>
       <button className="project-item advanced-toggle" onClick={() => setAdvancedVisuals((value) => !value)}>{advancedVisuals ? "− Sembunyikan visual lanjutan" : "+ Visual lanjutan"}</button>
       <div className="nav-section">PROJECTS</div>
       {projects.map((item) => <button key={item.id} className="project-item" onClick={() => loadProject(item.project)}>{item.title}</button>)}
@@ -211,6 +243,7 @@ export default function App() {
         {advancedVisuals && <section className="editorial-tools"><div className="tool-kicker">EDITORIAL TOOLS</div><label className="upload-control"><input type="file" accept="image/*,video/*" onChange={(e) => { const file = e.target.files?.[0]; if (file) uploadAsset(file); e.currentTarget.value = ""; }} disabled={uploading} /><span>{uploading ? "Uploading…" : "Upload Footage / Image"}</span></label>{projectAssets.length > 0 ? <div className="asset-strip">{projectAssets.slice(0, 2).map((asset) => <span key={asset.id}>{asset.type === "video" ? "VID" : "IMG"} · {asset.label}</span>)}</div> : <p className="asset-empty">Upload one local image or video to unlock templates.</p>}<div className="template-list"><button onClick={() => applyTemplate("footage")}><b>Footage + Script</b><small>Bold title + script word on footage</small></button><button onClick={() => applyTemplate("portrait")}><b>Portrait Sidecard</b><small>Vertical media with compact type</small></button><button onClick={() => applyTemplate("object")}><b>Object Editorial</b><small>Object image + editorial accent</small></button></div></section>}
         <div className="inspector-head"><span>{advancedVisuals ? "COMPONENTS" : "TEXT TOOLS"}</span><select defaultValue="" onChange={(e) => { if (e.target.value) addClip(e.target.value); e.currentTarget.value = ""; }}><option value="">+ Add component</option>{componentOptions.filter(([id]) => advancedVisuals || id.startsWith("typography.")).map(([id, label]) => <option value={id} key={id}>{label}</option>)}</select></div>
         {!selectedClip ? <div className="empty-inspector">Choose a component on the stage or timeline.<br /><br />Start with an <b>Editorial Tool</b>, or add a component below.</div> : <div className="clip-editor"><div className="clip-editor-title"><span>{selectedClip.kind}</span><button onClick={() => deleteClip(selectedClip.id)}>Delete</button></div><label>ID<input value={selectedClip.id} onChange={(e) => updateSelectedClip({ id: safeId(e.target.value, selectedClip.id) })} /></label><div className="form-row"><label>Start (frame)<input type="number" value={selectedClip.at} onChange={(e) => updateSelectedClip({ at: Number(e.target.value) })} /></label><label>Duration<input type="number" value={selectedClip.durationFrames} onChange={(e) => updateSelectedClip({ durationFrames: Number(e.target.value) })} /></label></div>{typeof selectedClip.props.text === "string" && <><label>Text <small>Tekan Enter untuk membuat baris baru</small><textarea className="text-input" rows={3} value={selectedClip.props.text} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, text: e.target.value } })} /></label><section className="highlight-editor"><span>MARKER HIGHLIGHT</span><label>Highlight 1 kata<input value={highlightWord} onChange={(e) => setHighlightWord(e.target.value)} placeholder="misalnya: ditolak" /></label><div className="form-row"><label>Warna stabilo<select value={highlightColor} onChange={(e) => setHighlightColor(e.target.value as typeof highlightColor)}><option>Yellow</option><option>Lime</option><option>Blue</option></select></label></div><button className="apply-highlight" onClick={applyHighlight}>Gunakan Marker Saja</button></section></>}{selectedClip.kind === "typography.headline" && <section className="accent-editor"><span>ACCENT TYPOGRAPHY</span><label>Accent word <input value={accentWord} onChange={(e) => setAccentWord(e.target.value)} placeholder="e.g. beautifully" /></label><div className="form-row"><label>Script font<select value={accentFont} onChange={(e) => setAccentFont(e.target.value as typeof accentFont)}><option>Great Vibes</option><option>Instrument Serif italic</option></select></label><label>Accent color<select value={accentColor} onChange={(e) => setAccentColor(e.target.value as typeof accentColor)}><option>Lime</option><option>Cream</option><option>Blue</option></select></label></div><button className="apply-accent" onClick={applyAccent}>Gunakan Script Saja</button></section>}{typeof selectedClip.props.title === "string" && <label>Title<input value={selectedClip.props.title} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, title: e.target.value } })} /></label>}{typeof selectedClip.props.value === "string" && <label>Value<input value={selectedClip.props.value} onChange={(e) => updateSelectedClip({ props: { ...selectedClip.props, value: e.target.value } })} /></label>}<details className="advanced-props"><summary>Advanced · Props JSON</summary><textarea key={selectedClip.id} className="props-json" defaultValue={JSON.stringify(selectedClip.props, null, 2)} onBlur={(e) => updatePropsJson(e.target.value)} /><small>Use quick fields for common edits. JSON is for advanced adjustments.</small></details></div>}
+        <div className="background-box"><span>BACKGROUND OUTPUT</span><select value={hasFullDashboard ? "dashboard" : backgroundMode} disabled={hasFullDashboard} onChange={(e) => setBackgroundMode(e.target.value as "brand" | "chroma")}><option value="brand">Brand · Dark Navy</option><option value="chroma">Remove later · Chroma Green</option>{hasFullDashboard && <option value="dashboard">Full Dashboard · Locked</option>}</select><small>{hasFullDashboard ? "Dashboard memenuhi seluruh frame, jadi background desain dipertahankan." : "Pilih chroma bila aset akan ditumpuk di CapCut."}</small></div>
         <div className="audio-box"><span>AUDIO</span><label><input type="checkbox" checked={audio.sfxEnabled} onChange={(e) => setAudio({ ...audio, sfxEnabled: e.target.checked })} /> SFX</label><label><input type="checkbox" checked={audio.padEnabled} onChange={(e) => setAudio({ ...audio, padEnabled: e.target.checked })} /> Ambient pad</label></div>
       </>}
     </aside>

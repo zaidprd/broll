@@ -13,6 +13,8 @@ type AudioSettings = { sfxEnabled: boolean; padEnabled: boolean; sfxVolume: numb
 
 const API = "/api";
 const FPS = 30;
+const lucideIcons = ["auto", "none", "activity", "chart-no-axes-combined", "cpu", "gauge", "list-checks", "microchip", "monitor", "mouse-pointer-click", "network", "panels-top-left", "presentation", "route", "settings", "table-2", "toggle-right", "workflow", "zap"] as const;
+const iconMotions = ["reveal", "pulse", "orbit", "float", "rotate", "scan", "pop"] as const;
 const componentOptions = [
   ["apple.motion", "Apple Motion · Semua Variasi"],
     ["apple.iconFootage", "Apple Motion · Footage Ikon"],
@@ -262,6 +264,8 @@ export default function App() {
           {typeof selectedClip.props.plusPrice === "string" && <label>Harga Plus<input value={selectedClip.props.plusPrice} onChange={(e) => updateSelectedProp("plusPrice", e.target.value)} /></label>}
           {typeof selectedClip.props.businessPrice === "string" && <label>Harga Business<input value={selectedClip.props.businessPrice} onChange={(e) => updateSelectedProp("businessPrice", e.target.value)} /></label>}
           {typeof selectedClip.props.title === "string" && <label>Judul<input value={selectedClip.props.title} onChange={(e) => updateSelectedProp("title", e.target.value)} /></label>}
+          {(selectedClip.kind === "apple.motion" || selectedClip.kind === "apple.iconFootage") && <label>Ikon<select value={selectedClip.props.icon || (selectedClip.kind === "apple.iconFootage" ? "microchip" : "auto")} onChange={(e) => updateSelectedProp("icon", e.target.value === "auto" ? undefined : e.target.value)}>{lucideIcons.map((icon) => <option value={icon} key={icon}>{icon === "auto" ? "Otomatis sesuai preset" : icon === "none" ? "Tanpa ikon" : icon}</option>)}</select></label>}
+          {selectedClip.kind === "apple.iconFootage" && <label>Gerakan ikon<select value={selectedClip.props.motion || "orbit"} onChange={(e) => updateSelectedProp("motion", e.target.value)}>{iconMotions.map((motion) => <option value={motion} key={motion}>{motion}</option>)}</select></label>}
           {typeof selectedClip.props.centerLabel === "string" && <label>Label tengah<input value={selectedClip.props.centerLabel} onChange={(e) => updateSelectedProp("centerLabel", e.target.value)} /></label>}
           {typeof selectedClip.props.text === "string" && <label>Teks<textarea className="text-input" rows={3} value={selectedClip.props.text} onChange={(e) => updateSelectedProp("text", e.target.value)} /></label>}
           {advancedVisuals && <details className="advanced-props"><summary>Props JSON</summary><textarea key={selectedClip.id} className="props-json" defaultValue={JSON.stringify(selectedClip.props, null, 2)} onBlur={(e) => updatePropsJson(e.target.value)} /></details>}

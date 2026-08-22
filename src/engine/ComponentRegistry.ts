@@ -67,7 +67,7 @@ const appleMotionProps = z.object({
   variant: z.enum(["dark-stage", "light-stage", "glass-button", "toggle", "segment-control", "metric", "line-chart", "comparison", "data-flow", "table", "screen-window", "presenter-graphic", "big-statement", "process-network", "summary-steps"]),
   title: z.string().optional(), subtitle: z.string().optional(), primary: z.string().optional(), background: z.string().optional(),
   value: z.union([z.string(), z.number()]).optional(), secondaryValue: z.union([z.string(), z.number()]).optional(),
-  labels: z.array(z.string()).optional(),
+  labels: z.array(z.string()).optional(), icon: z.union([lucideIconName, z.literal("none")]).optional(),
   items: z.array(z.union([z.string(), z.object({label: z.string(), value: z.union([z.string(), z.number()]).optional(), detail: z.string().optional(), color: z.string().optional()})])).optional(),
   audioEnabled: z.boolean().optional(),
 });

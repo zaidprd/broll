@@ -32,8 +32,7 @@
 
 .simple-mode .scene-rail,
 .simple-mode .timeline,
-.simple-mode .stage-clip,
-.simple-mode .stage-canvas .stage-preview {
+.simple-mode .stage-clip {
   display: none;
 }
 
@@ -50,9 +49,7 @@
 }
 
 .simple-mode .stage-canvas::before {
-  content: "Klik Render MP4 untuk melihat preview";
-  color: #94a3b8;
-  font: 13px "DM Mono", monospace;
+  content: "";
 }
 
 .simple-mode .stage-label {

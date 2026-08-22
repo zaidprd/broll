@@ -59,7 +59,7 @@ function getAllArgs(name) {
   return out;
 }
 
-const presetName = getArg("--preset") || "script-hero";
+const presetName = getArg("--preset") || "apple-01-dark-stage";
 const outputArg = getArg("--output") || "out/broll.mp4";
 const textOverrides = getAllArgs("--text"); // ["3:stop", "4:chasing"]
 const fontOverrides = getAllArgs("--font"); // ["3:classic"]
@@ -73,7 +73,7 @@ if (args.includes("--list")) {
   for (const f of files) {
     const p = JSON.parse(readFileSync(join(PRESETS_DIR, f), "utf8"));
     console.log(`  • ${f.replace(".json", "")}`);
-    console.log(`    ${p.name || "(no name)"}`);
+    console.log(`    ${p.title || p.name || "(no title)"}`);
     if (p.description) console.log(`    ${p.description}`);
     console.log();
   }

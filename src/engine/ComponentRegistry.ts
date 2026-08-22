@@ -53,6 +53,24 @@ const infographicProps = z.object({
   items: z.array(z.object({label: z.string(), value: z.number().min(0).max(100), detail: z.string().optional()})).min(1).max(4).optional(),
 });
 const paymentWarningProps = z.object({eyebrow: z.string().optional(), italicWord: z.string().optional(), message: z.string().optional(), audioEnabled: z.boolean().optional()});
+const gpuHeroProps = z.object({
+  eyebrow: z.string().optional(), headline: z.string().optional(), question: z.string().optional(),
+  primary: z.string().optional(), background: z.string().optional(), gpuLabel: z.string().optional(), integratedLabel: z.string().optional(),
+});
+const lucideIconName = z.enum(["activity", "chart-no-axes-combined", "cpu", "gauge", "list-checks", "microchip", "monitor", "mouse-pointer-click", "network", "panels-top-left", "presentation", "route", "settings", "table-2", "toggle-right", "workflow", "zap"]);
+const iconFootageProps = z.object({
+  icon: lucideIconName.optional(), motion: z.enum(["reveal", "pulse", "orbit", "float", "rotate", "scan", "pop"]).optional(),
+  title: z.string().optional(), subtitle: z.string().optional(), primary: z.string().optional(), background: z.string().optional(),
+  iconSize: z.number().positive().max(400).optional(), audioEnabled: z.boolean().optional(),
+});
+const appleMotionProps = z.object({
+  variant: z.enum(["dark-stage", "light-stage", "glass-button", "toggle", "segment-control", "metric", "line-chart", "comparison", "data-flow", "table", "screen-window", "presenter-graphic", "big-statement", "process-network", "summary-steps"]),
+  title: z.string().optional(), subtitle: z.string().optional(), primary: z.string().optional(), background: z.string().optional(),
+  value: z.union([z.string(), z.number()]).optional(), secondaryValue: z.union([z.string(), z.number()]).optional(),
+  labels: z.array(z.string()).optional(),
+  items: z.array(z.union([z.string(), z.object({label: z.string(), value: z.union([z.string(), z.number()]).optional(), detail: z.string().optional(), color: z.string().optional()})])).optional(),
+  audioEnabled: z.boolean().optional(),
+});
 const exchangeRateProps = z.object({rate: z.number().positive().optional(), currency: z.string().optional(), period: z.string().optional(), audioEnabled: z.boolean().optional()});
 const workflowProps = z.object({ position, width: z.number().positive().optional(), title: z.string().optional(), nodes: z.array(z.object({ id: z.string(), label: z.string(), icon: z.string().optional(), tone: z.string().optional() })).min(2) });
 const bigNumberProps = z.object({ position, value: z.string(), label: z.string().optional(), accent: z.string().optional() });
@@ -89,6 +107,9 @@ const schemas = {
   "ui.pricingDashboard": pricingDashboardProps,
   "infographic.preset": infographicProps,
   "ui.paymentWarning": paymentWarningProps,
+    "ui.gpuHero": gpuHeroProps,
+      "apple.motion": appleMotionProps,
+        "apple.iconFootage": iconFootageProps,
   "chart.exchangeRate": exchangeRateProps,
   "workflow.flow": workflowProps,
   "chart.metric": bigNumberProps,
@@ -120,7 +141,7 @@ export function validateComponentProps(kind: string, props: unknown): string[] {
 
 export const COMPONENT_FAMILIES = {
   typography: ["typography.headline", "typography.body", "typography.label"],
-  ui: ["ui.browser", "ui.notification", "ui.appGrid", "ui.checklist", "ui.progress", "ui.terminal", "ui.cursor", "ui.offerDashboard", "ui.paymentCollision", "ui.pricingDashboard", "ui.paymentWarning"], infographic: ["infographic.preset"],
+  ui: ["ui.browser", "ui.notification", "ui.appGrid", "ui.checklist", "ui.progress", "ui.terminal", "ui.cursor", "ui.offerDashboard", "ui.paymentCollision", "ui.pricingDashboard", "ui.paymentWarning", "ui.gpuHero"], apple: ["apple.motion", "apple.iconFootage"], infographic: ["infographic.preset"],
   workflow: ["workflow.flow"], charts: ["chart.metric", "chart.comparison", "chart.bar", "chart.counter", "chart.exchangeRate"],
   callouts: ["callout.pointer"], effects: ["effect.spotlight"], devices: ["device.frame"], icons: ["icon"], media: ["media.image", "media.video"], audio: ["audio.clip"],
 } as const;

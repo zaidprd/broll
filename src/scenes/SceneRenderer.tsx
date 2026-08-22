@@ -17,6 +17,9 @@ import { DeviceFrame } from "../components/devices/DeviceFrame";
 import { Icon } from "../components/icons/Icon";
 import { AudioClip } from "../components/shared/AudioClip";
 import { EditorialImage, EditorialVideo } from "../components/media/EditorialMedia";
+import { GpuHero } from "../components/ui/GpuHero";
+import { AppleMotion } from "../components/apple/AppleMotion";
+import { LucideIconFootage } from "../components/apple/LucideIconFootage";
 import { resolveAsset, resolveAssetUrl } from "../engine/AssetResolver";
 import { getSfxUrl } from "../sfx/synth";
 
@@ -44,6 +47,9 @@ function renderClip(clip: CompiledClip, job: MotionRenderJob): React.ReactNode {
     case "ui.pricingDashboard": return <PricingDashboard {...propsOf<Parameters<typeof PricingDashboard>[0]>(clip)} />;
     case "infographic.preset": return <InfographicPreset {...propsOf<Parameters<typeof InfographicPreset>[0]>(clip)} />;
     case "ui.paymentWarning": return <PaymentWarning {...propsOf<Parameters<typeof PaymentWarning>[0]>(clip)} />;
+        case "ui.gpuHero": return <GpuHero {...propsOf<Parameters<typeof GpuHero>[0]>(clip)} />;
+            case "apple.motion": return <AppleMotion {...propsOf<Parameters<typeof AppleMotion>[0]>(clip)} />;
+                case "apple.iconFootage": return <LucideIconFootage {...propsOf<Parameters<typeof LucideIconFootage>[0]>(clip)} />;
     case "chart.exchangeRate": return <ExchangeRateChart {...propsOf<Parameters<typeof ExchangeRateChart>[0]>(clip)} />;
     case "workflow.flow": return <WorkflowFlow {...propsOf<Parameters<typeof WorkflowFlow>[0]>(clip)} enter={clip.enter} />;
     case "chart.metric": return <BigNumber {...propsOf<Parameters<typeof BigNumber>[0]>(clip)} enter={clip.enter} />;

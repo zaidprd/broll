@@ -1,0 +1,306 @@
+{
+  "schemaVersion": "1.0",
+  "id": "chatgpt-plus-incognito-broll",
+  "title": "ChatGPT Plus Incognito — SRT Cutaway Pack",
+  "format": {
+    "width": 1920,
+    "height": 864,
+    "fps": 30,
+    "background": "#050506"
+  },
+  "tokens": {
+    "colors": {
+      "ink": "#050506",
+      "brand": "#A3E635",
+      "danger": "#FF5C5C",
+      "blue": "#4C8DFF"
+    },
+    "fonts": {
+      "display": "display",
+      "sans": "sans",
+      "mono": "mono"
+    },
+    "spacing": {
+      "page": 96
+    }
+  },
+  "assets": {},
+  "scenes": [
+    {
+      "id": "01-free-offer",
+      "durationFrames": 120,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "01-offer-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "01-offer-dashboard",
+          "kind": "ui.offerDashboard",
+          "at": 0,
+          "durationFrames": 120,
+          "props": {
+            "greeting": "Ada hadiah untuk akunmu",
+            "offerTitle": "CHATGPT PLUS GRATIS 1 BULAN",
+            "offerBody": "Limited offer • Aktifkan sebelum penawaran berakhir",
+            "buttonLabel": "Klaim sekarang",
+            "accent": "#A3E635",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "02-payment-declined",
+      "durationFrames": 125,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "02-warning-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "02-warning",
+          "kind": "ui.paymentWarning",
+          "at": 0,
+          "durationFrames": 125,
+          "props": {
+            "eyebrow": "PEMBAYARAN",
+            "italicWord": "ditolak",
+            "message": "Penawaran tersedia, tetapi transaksi tidak dapat diproses.",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "03-bca-gopay-failed",
+      "durationFrames": 140,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "03-collision-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "03-payment-collision",
+          "kind": "ui.paymentCollision",
+          "at": 0,
+          "durationFrames": 140,
+          "props": {
+            "gopayAsset": "uploads/gopay.jfif",
+            "bcaAsset": "uploads/bca.jfif",
+            "background": "#050506",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "04-chatgpt-go-plan",
+      "durationFrames": 140,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "04-pricing-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "04-pricing-dashboard",
+          "kind": "ui.pricingDashboard",
+          "at": 0,
+          "durationFrames": 140,
+          "props": {
+            "goPrice": "Rp75.000",
+            "plusPrice": "±Rp349.000",
+            "businessPrice": "$25",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "05-offer-still-active",
+      "durationFrames": 120,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "05-offer-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "05-offer-return",
+          "kind": "ui.offerDashboard",
+          "at": 0,
+          "durationFrames": 120,
+          "props": {
+            "greeting": "Satu bulan kemudian...",
+            "offerTitle": "FREE OFFER MASIH TERSEDIA",
+            "offerBody": "Penawaran Plus muncul kembali setelah paket Go berakhir",
+            "buttonLabel": "Coba lagi",
+            "accent": "#4C8DFF",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "06-incognito-solution",
+      "durationFrames": 150,
+      "transitionOut": { "preset": "wipeLeft", "durationFrames": 10 },
+      "layers": [{
+        "id": "06-incognito-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "06-incognito-window",
+          "kind": "apple.motion",
+          "at": 0,
+          "durationFrames": 150,
+          "props": {
+            "variant": "screen-window",
+            "title": "Mulai dari sesi baru.",
+            "subtitle": "Buka Incognito • Login ulang • Tanpa sesi chat lama",
+            "labels": ["Ctrl + Shift + N", "chatgpt.com", "Private session"],
+            "icon": "panels-top-left",
+            "primary": "#A3E635",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "07-incognito-to-success",
+      "durationFrames": 165,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "07-flow-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "07-success-flow",
+          "kind": "apple.motion",
+          "at": 0,
+          "durationFrames": 165,
+          "props": {
+            "variant": "data-flow",
+            "title": "Kali ini berhasil.",
+            "subtitle": "Sesi baru membuat alur pembayaran berjalan mulus.",
+            "items": ["Incognito", "Login", "Bank Jago", "Berhasil ✓"],
+            "primary": "#A3E635",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "08-three-step-tutorial",
+      "durationFrames": 150,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "08-steps-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "08-summary-steps",
+          "kind": "apple.motion",
+          "at": 0,
+          "durationFrames": 150,
+          "props": {
+            "variant": "summary-steps",
+            "title": "Jika pembayaranmu ditolak...",
+            "subtitle": "Coba ulang dari sesi browser yang benar-benar baru.",
+            "items": [
+              { "label": "Buka Incognito", "detail": "Ctrl + Shift + N" },
+              { "label": "Login ulang", "detail": "Masuk ke akun yang mendapat offer" },
+              { "label": "Bayar kembali", "detail": "Coba BCA atau Bank Jago" }
+            ],
+            "primary": "#A3E635",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "09-plus-value",
+      "durationFrames": 135,
+      "transitionOut": { "preset": "wipeLeft", "durationFrames": 10 },
+      "layers": [{
+        "id": "09-value-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "09-value-metric",
+          "kind": "apple.motion",
+          "at": 0,
+          "durationFrames": 135,
+          "props": {
+            "variant": "metric",
+            "title": "Nilai satu bulan ChatGPT Plus",
+            "subtitle": "Lumayan besar untuk sebuah free offer.",
+            "value": "±Rp400 ribu",
+            "secondaryValue": "GRATIS 1 BULAN",
+            "icon": "chart-no-axes-combined",
+            "primary": "#A3E635",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "10-exchange-rate",
+      "durationFrames": 180,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "10-rate-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "10-usd-idr-rate",
+          "kind": "chart.exchangeRate",
+          "at": 0,
+          "durationFrames": 180,
+          "props": {
+            "rate": 18000,
+            "currency": "USD / IDR",
+            "period": "SEMAKIN MAHAL",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "11-payment-problem-recap",
+      "durationFrames": 125,
+      "transitionOut": { "preset": "hardCut", "durationFrames": 1 },
+      "layers": [{
+        "id": "11-warning-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "11-community-warning",
+          "kind": "ui.paymentWarning",
+          "at": 0,
+          "durationFrames": 125,
+          "props": {
+            "eyebrow": "BANYAK YANG",
+            "italicWord": "masih gagal",
+            "message": "Undangan gratis ada, tetapi tahap pembayaran tetap ditolak.",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    },
+    {
+      "id": "12-final-recap",
+      "durationFrames": 150,
+      "layers": [{
+        "id": "12-recap-layer",
+        "zIndex": 10,
+        "clips": [{
+          "id": "12-final-steps",
+          "kind": "apple.motion",
+          "at": 0,
+          "durationFrames": 150,
+          "props": {
+            "variant": "summary-steps",
+            "title": "Coba sebelum offer hilang.",
+            "subtitle": "Metode ini berhasil pada pengalaman saya; hasil tiap akun bisa berbeda.",
+            "items": [
+              { "label": "Incognito", "detail": "Mulai dari private session" },
+              { "label": "Login ulang", "detail": "Pastikan offer masih aktif" },
+              { "label": "BCA / Bank Jago", "detail": "Ulangi pembayaran dengan aman" }
+            ],
+            "primary": "#A3E635",
+            "audioEnabled": true
+          }
+        }]
+      }]
+    }
+  ]
+}

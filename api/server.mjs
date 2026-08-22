@@ -101,7 +101,8 @@ function startMotionRender(res, project, audio, name = "motion-project") {
   const outputArg = `out/${safeName}-${Date.now()}.mp4`;
   const isWin = process.platform === "win32";
   const remotionBin = isWin ? "node_modules\\.bin\\remotion.cmd" : "node_modules/.bin/remotion";
-  const proc = spawn(remotionBin, ["render", "src/index.ts", "Broll", outputArg, "--props", jobPath, "--concurrency", "1"], { cwd: ROOT, shell: isWin });
+  const renderJobPath = join("out", "jobs", `${jobId}.json`);
+  const proc = spawn(remotionBin, ["render", "src/index.ts", "Broll", outputArg, "--props", renderJobPath, "--concurrency", "1"], { cwd: ROOT, shell: isWin });
   let stderr = "";
   proc.stderr.on("data", (chunk) => { stderr += chunk.toString(); });
   proc.on("error", (error) => {
@@ -207,9 +208,10 @@ app.post("/render", async (req, res) => {
     ? "node_modules\\.bin\\remotion.cmd"
     : "node_modules/.bin/remotion";
 
+  const renderJobPath = join("out", "jobs", `${jobId}.json`);
   const proc = spawn(
     remotionBin,
-    ["render", "src/index.ts", "Broll", outputArg, "--props", jobPath, "--concurrency", "1"],
+    ["render", "src/index.ts", "Broll", outputArg, "--props", renderJobPath, "--concurrency", "1"],
     { cwd: ROOT, shell: isWin }
   );
 

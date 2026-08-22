@@ -186,7 +186,10 @@ const remotionBin = isWin
   : "node_modules/.bin/remotion";
 
 mkdirSync(join(ROOT, "out"), { recursive: true });
-const renderArgs = ["render", "src/index.ts", "Broll", outputArg, "--props", jobPath, "--concurrency", "1"];
+// Keep the props path relative on Windows. `shell: true` is required for the
+// `.cmd` shim, and an absolute workspace path containing spaces gets split.
+const renderJobPath = join("out", "jobs", `${jobId}.json`);
+const renderArgs = ["render", "src/index.ts", "Broll", outputArg, "--props", renderJobPath, "--concurrency", "1"];
 
 console.log(`🎬 Rendering: ${outputArg}\n`);
 const proc = spawn(remotionBin, renderArgs, {

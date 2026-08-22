@@ -27,13 +27,13 @@ echo Node version:
 node --version
 echo.
 
-echo [1/2] Installing engine dependencies...
-call npm install
+echo [1/2] Installing engine dependencies from lockfile...
+call npm ci
 if errorlevel 1 goto fail
 
 echo.
-echo [2/2] Installing Web UI dependencies...
-call npm --prefix web install
+echo [2/2] Installing Web UI dependencies from lockfile...
+call npm --prefix web ci
 if errorlevel 1 goto fail
 
 echo.

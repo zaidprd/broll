@@ -43,9 +43,11 @@ Klik dua kali `setup.bat`, lalu tunggu sampai dependencies selesai diunduh.
 ### Terminal (semua OS)
 
 ```bash
-npm install
-npm --prefix web install
+npm ci
+npm --prefix web ci
 ```
+
+Gunakan `npm ci` setelah clone atau pull agar versi dependency sama persis dengan `package-lock.json`. Jangan menyalin folder `node_modules` dari komputer lain.
 
 ---
 
@@ -68,6 +70,18 @@ http://localhost:5173
 ```
 
 Untuk berhenti di Windows, klik dua kali `stop.bat`. Jika memakai terminal, tekan `Ctrl + C`.
+
+### Troubleshooting dependency
+
+Jika muncul `ERR_MODULE_NOT_FOUND` setelah clone atau pull, hentikan aplikasi lalu instal ulang dari lockfile:
+
+```bash
+npm ci
+npm --prefix web ci
+npm run ui
+```
+
+Backend membutuhkan dependency runtime `express`, `cors`, dan `multer`. Ketiganya tercatat di `package.json` dan akan otomatis dipasang oleh `npm ci` atau `setup.bat`.
 
 ---
 

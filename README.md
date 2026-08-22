@@ -94,7 +94,10 @@ Backend membutuhkan dependency runtime `express`, `cors`, dan `multer`. Ketigany
 5. Planner lokal memilih scene template yang sesuai, seperti Hook, Browser Demo, Workflow, Feature Grid, Comparison, dan Conclusion.
 6. Masuk ke **Scene Builder** untuk memilih scene, menambah/menghapus component, mengubah teks, nilai, timing, atau properti lanjutan.
 7. Klik **Render MP4**.
-8. Setelah render selesai, video muncul di aplikasi dan dapat di-download. File juga tersimpan di folder `out/`.
+8. Pilih **Full-screen MP4** untuk cutaway penuh, atau **Overlay transparan MOV** untuk graphic di atas presenter.
+9. Setelah render selesai, video muncul di aplikasi dan dapat di-download. File juga tersimpan di folder `out/`.
+
+Untuk overlay presenter, import file MOV ke CapCut dan letakkan di track atas tanpa Chroma Key. Format ini memakai ProRes 4444 dengan alpha asli. Scale dan pindahkan graphic ke negative space agar tidak menutupi wajah presenter.
 
 ### Catatan penting
 

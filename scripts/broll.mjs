@@ -65,6 +65,7 @@ const textOverrides = getAllArgs("--text"); // ["3:stop", "4:chasing"]
 const fontOverrides = getAllArgs("--font"); // ["3:classic"]
 const animOverrides = getAllArgs("--anim"); // ["4:scaleIn"]
 const setFlags = getAllArgs("--set"); // ["3.text=stop", "4.font=classic"]
+const alphaOutput = args.includes("--alpha");
 
 // ─── --list preset ───
 if (args.includes("--list")) {
@@ -190,6 +191,9 @@ mkdirSync(join(ROOT, "out"), { recursive: true });
 // `.cmd` shim, and an absolute workspace path containing spaces gets split.
 const renderJobPath = join("out", "jobs", `${jobId}.json`);
 const renderArgs = ["render", "src/index.ts", "Broll", outputArg, "--props", renderJobPath, "--concurrency", "1"];
+if (alphaOutput) {
+  renderArgs.push("--image-format=png", "--pixel-format=yuva444p10le", "--codec=prores", "--prores-profile=4444");
+}
 
 console.log(`🎬 Rendering: ${outputArg}\n`);
 const proc = spawn(remotionBin, renderArgs, {

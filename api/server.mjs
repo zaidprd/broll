@@ -83,7 +83,7 @@ function listCustomSfx() {
     }));
 }
 
-function startMotionRender(res, project, audio, name = "motion-project") {
+function startMotionRender(res, project, audio, name = "motion-project", outputMode = "mp4") {
   if (renderBusy) {
     return res.status(409).json({ error: "Render sedang berjalan. Tunggu sampai render sebelumnya selesai." });
   }
@@ -98,11 +98,14 @@ function startMotionRender(res, project, audio, name = "motion-project") {
   };
   writeFileSync(jobPath, JSON.stringify({ job }, null, 2));
 
-  const outputArg = `out/${safeName}-${Date.now()}.mp4`;
+  const alphaOutput = outputMode === "alpha";
+  const outputArg = `out/${safeName}-${Date.now()}.${alphaOutput ? "mov" : "mp4"}`;
   const isWin = process.platform === "win32";
   const remotionBin = isWin ? "node_modules\\.bin\\remotion.cmd" : "node_modules/.bin/remotion";
   const renderJobPath = join("out", "jobs", `${jobId}.json`);
-  const proc = spawn(remotionBin, ["render", "src/index.ts", "Broll", outputArg, "--props", renderJobPath, "--concurrency", "1"], { cwd: ROOT, shell: isWin });
+  const renderArgs = ["render", "src/index.ts", "Broll", outputArg, "--props", renderJobPath, "--concurrency", "1"];
+  if (alphaOutput) renderArgs.push("--image-format=png", "--pixel-format=yuva444p10le", "--codec=prores", "--prores-profile=4444");
+  const proc = spawn(remotionBin, renderArgs, { cwd: ROOT, shell: isWin });
   let stderr = "";
   proc.stderr.on("data", (chunk) => { stderr += chunk.toString(); });
   proc.on("error", (error) => {
@@ -259,11 +262,11 @@ app.post("/plan", (req, res) => {
 
 // ─── POST /render-project ───
 app.post("/render-project", (req, res) => {
-  const { project, audio, name } = req.body || {};
+  const { project, audio, name, outputMode } = req.body || {};
   if (!project || project.schemaVersion !== "1.0" || !Array.isArray(project.scenes)) {
     return res.status(400).json({ error: "MotionProject V1 tidak valid." });
   }
-  return startMotionRender(res, project, audio, name || project.title);
+  return startMotionRender(res, project, audio, name || project.title, outputMode);
 });
 
 // ─── POST /motion-assets ───
